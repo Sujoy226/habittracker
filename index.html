@@ -10,6 +10,65 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#f5f5f3;--surface:#fff;--surface2:#f0efea;--border:rgba(0,0,0,0.12);--text:#1a1a18;--text2:#6b6b67;--text3:#9b9b97;--green:#1D9E75;--blue:#378ADD;--amber:#EF9F27;--red:#E24B4A;--green-bg:#EAF3DE;--green-text:#3B6D11;--amber-bg:#FAEEDA;--amber-text:#854F0B;--red-bg:#FCEBEB;--red-text:#A32D2D;--blue-bg:#E6F1FB;--blue-text:#185FA5;--radius:12px;--radius-sm:8px}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+/* DASHBOARD PREMIUM */
+.dash-hero{background:linear-gradient(135deg,#0f6e56 0%,#1D9E75 50%,#2bb88a 100%);border-radius:16px;padding:20px 24px;margin-bottom:16px;color:#fff;position:relative;overflow:hidden}
+.dash-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.07)}
+.dash-hero::after{content:'';position:absolute;bottom:-30px;right:60px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.05)}
+.dash-hero h1{font-size:22px;font-weight:600;margin-bottom:2px}
+.dash-hero p{font-size:12px;opacity:0.8}
+.dash-hero-badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.hero-badge{background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:5px;color:#fff}
+.hero-badge.warn{background:rgba(239,159,39,0.3);border-color:rgba(239,159,39,0.4)}
+.hero-badge.danger{background:rgba(226,75,74,0.3);border-color:rgba(226,75,74,0.4)}
+.hero-refresh{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:8px;padding:6px 12px;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:inherit;transition:background 0.2s}
+.hero-refresh:hover{background:rgba(255,255,255,0.25)}
+/* ANIMATED METRIC CARDS */
+.metric-card-premium{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;cursor:default}
+.metric-card-premium:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+.metric-card-premium::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.metric-card-premium.mood::before{background:linear-gradient(90deg,#1D9E75,#2bb88a)}
+.metric-card-premium.energy::before{background:linear-gradient(90deg,#378ADD,#5BA3F5)}
+.metric-card-premium.pain::before{background:linear-gradient(90deg,#EF9F27,#F5B84A)}
+.metric-card-premium.pain.high::before{background:linear-gradient(90deg,#E24B4A,#F07070)}
+.metric-card-premium.sleep::before{background:linear-gradient(90deg,#7C5CBF,#A87FE8)}
+.mcp-label{font-size:11px;font-weight:500;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:0.04em}
+.mcp-value{font-size:32px;font-weight:600;line-height:1;margin-bottom:4px}
+.mcp-sub{font-size:11px;color:var(--text2)}
+.mcp-trend{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px;font-weight:500}
+.mcp-trend.up{color:#3B6D11}.mcp-trend.down{color:#A32D2D}.mcp-trend.flat{color:var(--text2)}
+.mcp-icon{position:absolute;bottom:12px;right:14px;font-size:28px;opacity:0.08}
+/* SUMMARY CARDS */
+.sum-card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;transition:transform 0.2s,box-shadow 0.2s}
+.sum-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.07)}
+.sum-icon-wrap{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sum-icon-wrap.green{background:var(--green-bg)}.sum-icon-wrap.blue{background:var(--blue-bg)}.sum-icon-wrap.amber{background:var(--amber-bg)}.sum-icon-wrap.red{background:var(--red-bg)}
+.sum-val{font-size:20px;font-weight:600;line-height:1}
+.sum-label{font-size:11px;color:var(--text2);margin-top:2px}
+/* CHART CARD */
+.chart-card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:0}
+/* RING CARD */
+.ring-card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:16px 18px}
+/* STREAK CARD */
+.streak-card-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface2);border-radius:10px;margin-bottom:6px;transition:background 0.15s}
+.streak-card-item:hover{background:#e8e7e2}
+.streak-fire-ct{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600}
+/* GOAL BARS */
+.goal-bar-card{padding:10px 0;border-bottom:0.5px solid var(--border)}
+.goal-bar-card:last-child{border-bottom:none}
+/* HABIT MINI GRID */
+.hmini-row{margin-bottom:8px}
+.hmini-name{font-size:11px;color:var(--text2);margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
+.hmini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.hmini-cell{aspect-ratio:1;border-radius:4px;transition:transform 0.15s}
+.hmini-cell:hover{transform:scale(1.2)}
+.hmini-done{background:linear-gradient(135deg,#639922,#7aba2a)}.hmini-miss{background:#F7C1C1}.hmini-empty{background:var(--surface2)}
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes countUp{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.anim-fade{animation:fadeUp 0.4s ease both}
+.anim-fade-1{animation-delay:0.05s}.anim-fade-2{animation-delay:0.1s}.anim-fade-3{animation-delay:0.15s}.anim-fade-4{animation-delay:0.2s}
+.anim-fade-5{animation-delay:0.25s}.anim-fade-6{animation-delay:0.3s}.anim-fade-7{animation-delay:0.35s}
 .nav{background:var(--surface);border-bottom:0.5px solid var(--border);padding:0 16px;display:flex;align-items:center;position:sticky;top:0;z-index:100;overflow-x:auto}
 .nav-brand{font-size:15px;font-weight:500;padding:14px 16px 14px 0;border-right:0.5px solid var(--border);margin-right:8px;white-space:nowrap}
 .nav-tab{padding:14px 14px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s;user-select:none}
@@ -161,10 +220,13 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 
 <!-- DASHBOARD -->
 <div id="page-dashboard" class="page active">
-  <div class="ph"><div><h1>Dashboard</h1><p id="dateStr"></p></div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <span class="badge badge-b" id="weekBadge"></span><span class="badge" id="flareBadge"></span>
-      <button class="btn" onclick="loadDashboard()"><i class="ti ti-refresh"></i> Refresh</button>
+  <div class="dash-hero">
+    <button class="hero-refresh" onclick="loadDashboard()"><i class="ti ti-refresh"></i> Refresh</button>
+    <h1 id="dashGreeting">Good morning</h1>
+    <p id="dateStr"></p>
+    <div class="dash-hero-badges">
+      <span class="hero-badge"><i class="ti ti-calendar-week"></i> <span id="weekBadge"></span></span>
+      <span class="hero-badge" id="flareBadge"></span>
     </div>
   </div>
   <div id="dashContent"><div class="loading"><div class="spinner"></div> Loading…</div></div>
@@ -337,7 +399,10 @@ document.querySelectorAll('.nav-tab').forEach(tab=>{
   });
 });
 
-// DATE
+// DATE + GREETING
+const hr=today.getHours();
+const greeting=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+document.getElementById('dashGreeting').textContent=greeting+' 👋';
 document.getElementById('dateStr').textContent=today.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 document.getElementById('reflectionDate').textContent=today.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
 document.getElementById('habitDateLabel').textContent=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
@@ -354,8 +419,8 @@ async function apiPost(b){
   return r.json();
 }
 function sv(id,val){document.getElementById(id).textContent=val;}
-function drawRing(canvas,pct,color){const ctx=canvas.getContext('2d');const cx=32,cy=32,r=26,lw=7,tau=Math.PI*2;ctx.clearRect(0,0,64,64);ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+tau);ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();if(pct>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+tau*(pct/100));ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();}}
-function setFlareBadge(s){const el=document.getElementById('flareBadge');if(s==='FLARE'){el.className='badge badge-r';el.innerHTML='<i class="ti ti-alert-triangle"></i> Flare-up';}else if(s==='WARNING'){el.className='badge badge-a';el.innerHTML='<i class="ti ti-alert-circle"></i> Pain spike';}else{el.className='badge badge-g';el.innerHTML='<i class="ti ti-shield-check"></i> No flare-up';}}
+function drawRing(canvas,pct,color,size){size=size||64;const ctx=canvas.getContext('2d');const cx=size/2,cy=size/2,r=size/2-6,lw=7,tau=Math.PI*2;ctx.clearRect(0,0,size,size);ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+tau);ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();if(pct>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+tau*(pct/100));ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();}}
+function setFlareBadge(s){const el=document.getElementById('flareBadge');if(s==='FLARE'){el.className='hero-badge danger';el.innerHTML='<i class="ti ti-alert-triangle"></i> Flare-up detected';}else if(s==='WARNING'){el.className='hero-badge warn';el.innerHTML='<i class="ti ti-alert-circle"></i> Pain spike warning';}else{el.className='hero-badge';el.innerHTML='<i class="ti ti-shield-check"></i> No flare-up';}}
 
 // REFLECTION
 let selectedSeverity='',flareValue='No',medCount=0;
@@ -408,15 +473,8 @@ async function loadHabits(){
     const bs=streaks.length?streaks[0]:{habit_name:'—',current_streak:0};
     document.getElementById('habitSummaryRow').innerHTML=`<div class="metric-card"><div class="metric-label"><i class="ti ti-checklist" style="font-size:12px"></i>Done today</div><div class="metric-value">${hc.done}<span style="font-size:13px;color:var(--text2)">/${hc.total}</span></div><div class="metric-sub">${hc.pct}% completion</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-flame" style="font-size:12px"></i>Best streak</div><div class="metric-value" style="color:var(--amber-text)">${bs.current_streak}<span style="font-size:13px;color:var(--text2)">d</span></div><div class="metric-sub">${bs.habit_name}</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-list-check" style="font-size:12px"></i>Active habits</div><div class="metric-value">${habitsData.length}<span style="font-size:13px;color:var(--text2)">/20</span></div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-calendar-week" style="font-size:12px"></i>7-day logged</div><div class="metric-value">${habitLog.length}<span style="font-size:13px;color:var(--text2)"> entries</span></div></div>`;
     renderChecklist();
-    // consistency
-    const el=document.getElementById('habitConsistencyGrid');
-    if(!habitsData.length){el.innerHTML='<p style="font-size:12px;color:var(--text2)">No habits yet.</p>';}
-    else{
-      const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-      let html=`<div style="display:grid;grid-template-columns:100px repeat(7,1fr);gap:3px;margin-bottom:4px"><div></div>${days.map(d=>`<div style="font-size:10px;color:var(--text2);text-align:center;font-weight:500">${d}</div>`).join('')}</div>`;
-      habitsData.forEach(h=>{const logs=habitLog.filter(l=>l.habit_id===h.habit_id);html+=`<div style="display:grid;grid-template-columns:100px repeat(7,1fr);gap:3px;margin-bottom:3px"><div style="font-size:11px;color:var(--text2);display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${h.habit_name}</div>`;for(let i=0;i<7;i++){const log=logs[i];const cls=!log?'hc-empty':log.status==='Done'?'hc-done':'hc-miss';html+=`<div class="hcell ${cls}" style="border-radius:3px;aspect-ratio:1"></div>`;}html+=`</div>`;});
-      el.innerHTML=html;
-    }
+    // consistency grid
+    renderConsistencyGrid(habitLog, habitsData);
     // streaks
     let sH='',lH='';
     if(streaks.length){streaks.slice(0,6).forEach(s=>{const c=s.current_streak>=7?'var(--amber-text)':s.current_streak>=3?'var(--green-text)':'var(--text2)';sH+=`<div class="streak-item"><span class="streak-name">${s.habit_name}</span><span class="streak-ct" style="color:${c}"><i class="ti ti-flame" style="font-size:14px"></i>${s.current_streak}d</span></div>`;lH+=`<div class="streak-item"><span class="streak-name">${s.habit_name}</span><span class="streak-ct" style="color:var(--blue-text)"><i class="ti ti-trophy" style="font-size:14px"></i>${s.longest_streak}d</span></div>`;});}
@@ -455,6 +513,81 @@ async function submitNewHabit(){
   finally{btn.innerHTML='<i class="ti ti-check"></i> Add';btn.disabled=false;}
 }
 async function archiveHabit(id,name){if(!confirm('Archive "'+name+'"?'))return;try{const res=await apiPost({action:'archiveHabit',data:{habit_id:id}});if(res.success)loadHabits();}catch(e){alert('Could not archive: '+e.message);}}
+
+function renderConsistencyGrid(habitLog, habits){
+  const el=document.getElementById('habitConsistencyGrid');
+  if(!habits.length){el.innerHTML='<p style="font-size:12px;color:var(--text2)">No habits yet.</p>';return;}
+  const today=new Date();
+  const dayLabels=Array.from({length:7},(_,i)=>{
+    const d=new Date(today);d.setDate(today.getDate()-(6-i));
+    return{short:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][d.getDay()===0?6:d.getDay()-1],full:d.toLocaleDateString('en-US',{month:'short',day:'numeric'})};
+  });
+  let totalDone=0,totalPossible=0;
+  const perfectDays=Array(7).fill(0);
+  let bestStreakHabit={name:'—',streak:0};
+
+  let html=`<div class="cg-legend">
+    <span style="display:flex;align-items:center;gap:4px"><span class="cg-legend-dot" style="background:#EAF3DE;border:1px solid #639922"></span>Done</span>
+    <span style="display:flex;align-items:center;gap:4px"><span class="cg-legend-dot" style="background:#FCEBEB;border:1px solid #E24B4A"></span>Missed</span>
+    <span style="display:flex;align-items:center;gap:4px"><span class="cg-legend-dot" style="background:var(--surface2)"></span>No data</span>
+  </div>
+  <table class="cg-table" role="grid" aria-label="7-day habit consistency grid">
+  <thead><tr>
+    <th style="text-align:left;font-size:11px;font-weight:500;color:var(--text2);padding-bottom:8px">Habit</th>`;
+  dayLabels.forEach(d=>html+=`<th class="cg-day-head">${d.short}</th>`);
+  html+=`<th style="width:55px"></th><th style="width:36px"></th></tr></thead><tbody>`;
+
+  habits.forEach(h=>{
+    const logs=habitLog.filter(l=>l.habit_id===h.habit_id);
+    const done=logs.filter(l=>l.status==='Done').length;
+    const pct=Math.round((done/7)*100);
+    const pctColor=pct>=80?'#639922':pct>=50?'#BA7517':'#E24B4A';
+    totalDone+=done;totalPossible+=7;
+    logs.forEach((l,i)=>{if(l.status==='Done')perfectDays[i]++;});
+    // streak
+    let cur=0,max=0;
+    logs.forEach(l=>{if(l.status==='Done'){cur++;if(cur>max)max=cur;}else cur=0;});
+    if(max>bestStreakHabit.streak)bestStreakHabit={name:h.habit_name,streak:max};
+
+    html+=`<tr><td class="cg-habit-label"><div>${h.habit_name}</div><div class="cg-cat">${h.category}</div></td>`;
+    for(let i=0;i<7;i++){
+      const log=logs[i];
+      const status=log?log.status:'';
+      const cls=status==='Done'?'done':status==='Not Done'?'miss':'empty';
+      const icon=status==='Done'?'✓':status==='Not Done'?'✗':'·';
+      html+=`<td class="cg-cell-wrap"><button class="cg-cell ${cls}" data-habit="${h.habit_name}" data-day="${dayLabels[i].full}" data-status="${status||'No entry'}" aria-label="${h.habit_name} ${dayLabels[i].full}: ${status||'no entry'}">${icon}</button></td>`;
+    }
+    html+=`<td class="cg-bar-wrap"><div class="cg-bar-bg"><div class="cg-bar-fill" style="width:${pct}%;background:${pctColor}"></div></div></td>
+    <td class="cg-pct" style="color:${pctColor}">${pct}%</td></tr>`;
+  });
+  html+=`</tbody></table>`;
+
+  // summary
+  const overallPct=totalPossible?Math.round((totalDone/totalPossible)*100):0;
+  const bestDayIdx=perfectDays.indexOf(Math.max(...perfectDays));
+  const bestDay=dayLabels[bestDayIdx]?.short||'—';
+  html+=`<div class="cg-summary">
+    <div class="cg-stat"><div class="cg-stat-val" style="color:var(--green)">${overallPct}%</div><div class="cg-stat-label">Overall completion</div></div>
+    <div class="cg-stat"><div class="cg-stat-val" style="color:var(--amber-text)">${bestStreakHabit.streak}d</div><div class="cg-stat-label">Best streak · ${bestStreakHabit.name}</div></div>
+    <div class="cg-stat"><div class="cg-stat-val" style="font-size:15px;padding-top:2px">${bestDay}</div><div class="cg-stat-label">Most consistent day</div></div>
+  </div>
+  <div class="cg-tooltip" id="cgTooltip"></div>`;
+
+  el.innerHTML=html;
+
+  // tooltip
+  const tip=document.getElementById('cgTooltip');
+  el.querySelectorAll('.cg-cell').forEach(btn=>{
+    btn.addEventListener('mouseenter',()=>{
+      const s=btn.dataset.status;
+      const c=s==='Done'?'#3B6D11':s==='Not Done'?'#A32D2D':'var(--text2)';
+      tip.innerHTML=`<span style="font-weight:500">${btn.dataset.habit}</span><br><span style="color:var(--text2)">${btn.dataset.day}</span> — <span style="color:${c};font-weight:500">${s==='Done'?'Completed':s==='Not Done'?'Missed':'No entry'}</span>`;
+      tip.style.opacity='1';
+    });
+    btn.addEventListener('mousemove',e=>{tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-40)+'px';});
+    btn.addEventListener('mouseleave',()=>tip.style.opacity='0');
+  });
+}
 
 // GOALS
 let goalsData=[];
@@ -672,33 +805,156 @@ async function loadDashboard(){
   try{
     const data=await apiGet({action:'getDashboard'});
     setFlareBadge(data.flare?data.flare.status:'OK');
-    const hasToday=data.daily&&data.daily.mood;const history=data.history_7d||[];const streaks=data.streaks||[];const goals=data.goals||[];const habitLog=data.habit_log||[];const hc=data.habit_completion||{done:0,total:0,pct:0};
+    const hasToday=data.daily&&data.daily.mood;
+    const history=data.history_7d||[];
+    const streaks=data.streaks||[];
+    const goals=data.goals||[];
+    const habitLog=data.habit_log||[];
+    const hc=data.habit_completion||{done:0,total:0,pct:0};
+    const fr=data.flare?data.flare.status:'OK';
     let html='';
-    if(hasToday){const d=data.daily;const mT=d.mood>=7?'tl-g':d.mood>=4?'tl-a':'tl-r';const eT=d.energy>=7?'tl-g':d.energy>=4?'tl-a':'tl-r';const pT=d.pain_overall<=3?'tl-g':d.pain_overall<=6?'tl-a':'tl-r';
-      html+=`<div class="g4"><div class="metric-card"><div class="metric-label"><span class="tl ${mT}"></span>Mood</div><div class="metric-value">${d.mood}<span style="font-size:13px;color:var(--text2)">/10</span></div></div><div class="metric-card"><div class="metric-label"><span class="tl ${eT}"></span>Energy</div><div class="metric-value">${d.energy}<span style="font-size:13px;color:var(--text2)">/10</span></div></div><div class="metric-card"><div class="metric-label"><span class="tl ${pT}"></span>Pain</div><div class="metric-value">${d.pain_overall}<span style="font-size:13px;color:var(--text2)">/10</span></div><div class="metric-sub">${d.flare_up==='Yes'?'<span style="color:var(--red-text)">Flare-up</span>':'No flare-up'}</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-moon" style="font-size:12px"></i>Sleep</div><div class="metric-value">${d.sleep_hours}<span style="font-size:13px;color:var(--text2)">h</span></div><div class="metric-sub">Quality: ${d.sleep_quality}/10</div></div></div>`;
-    }else{html+=`<div class="empty-state"><i class="ti ti-calendar-off"></i><h3>No data for today yet</h3><p>Go to Daily Reflection to log today's entry.</p><button class="btn btn-primary" onclick="document.querySelector('[data-page=reflection]').click()"><i class="ti ti-pencil"></i> Add today's entry</button></div>`;}
-    const bs=streaks.length?streaks[0]:null;const fr=data.flare?data.flare.status:'OK';
-    const rl=fr==='FLARE'?'<span style="color:var(--red-text)">Active</span>':fr==='WARNING'?'<span style="color:var(--amber-text)">Moderate</span>':'<span style="color:var(--green-text)">Low</span>';
-    html+=`<div class="g4"><div class="metric-card"><div class="metric-label"><i class="ti ti-checklist" style="font-size:12px"></i>Today's habits</div><div class="metric-value">${hc.pct}<span style="font-size:13px;color:var(--text2)">%</span></div><div class="metric-sub">${hc.done} of ${hc.total} done</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-target" style="font-size:12px"></i>Active goals</div><div class="metric-value">${data.goal_avg_pct||0}<span style="font-size:13px;color:var(--text2)">%</span></div><div class="metric-sub">${goals.length} goal${goals.length!==1?'s':''}</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-flame" style="font-size:12px"></i>Best streak</div><div class="metric-value" style="color:var(--amber-text)">${bs?bs.current_streak:0}<span style="font-size:13px;color:var(--text2)">d</span></div><div class="metric-sub">${bs?bs.habit_name:'—'}</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-activity" style="font-size:12px"></i>Flare risk</div><div class="metric-value" style="font-size:16px;padding-top:3px">${rl}</div></div></div>`;
-    if(history.length>0){html+=`<div class="g65"><div class="card"><div class="slabel">7-day trend</div><div style="position:relative;height:160px"><canvas id="weekChart"></canvas></div><div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--text2)"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:var(--green);display:inline-block;border-radius:2px"></span>Mood</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:var(--blue);display:inline-block;border-radius:2px"></span>Energy</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;border-top:2px dashed var(--red);display:inline-block"></span>Pain</span></div></div><div class="card"><div class="slabel">Progress rings</div><div class="ring-row"><div class="ring-wrap"><canvas id="ring1" width="64" height="64"></canvas><div class="ring-val">${hc.pct}%</div><div class="ring-lbl">Habits</div></div><div class="ring-wrap"><canvas id="ring2" width="64" height="64"></canvas><div class="ring-val">${data.goal_avg_pct||0}%</div><div class="ring-lbl">Goals</div></div></div></div></div>`;}
-    html+=`<div class="g3"><div class="card"><div class="slabel">Streaks</div>`;
-    if(streaks.length)streaks.slice(0,5).forEach(s=>{const c=s.current_streak>=7?'var(--amber-text)':s.current_streak>=3?'var(--green-text)':'var(--text2)';html+=`<div class="streak-item"><span class="streak-name">${s.habit_name}</span><span class="streak-ct" style="color:${c}"><i class="ti ti-flame" style="font-size:14px"></i>${s.current_streak}d</span></div>`;});
-    else html+=`<p style="font-size:12px;color:var(--text2);padding:8px 0">No streaks yet.</p>`;
-    html+=`</div><div class="card"><div class="slabel">Habit consistency — 7 days</div>`;
-    if(habitLog.length){const names=[...new Set(habitLog.map(h=>h.habit_name))];names.forEach(name=>{const logs=habitLog.filter(h=>h.habit_name===name);const pct=Math.round((logs.filter(h=>h.status==='Done').length/7)*100);const pc=pct>=80?'var(--green-text)':pct>=50?'var(--amber-text)':'var(--red-text)';html+=`<div class="hrow"><div class="hrow-name"><span>${name}</span><span style="color:${pc}">${pct}%</span></div><div class="hgrid">`;for(let i=0;i<7;i++){const cl=i<logs.length?(logs[i].status==='Done'?'hc-done':'hc-miss'):'hc-empty';html+=`<div class="hcell ${cl}"></div>`;}html+=`</div></div>`;});}
-    else html+=`<p style="font-size:12px;color:var(--text2);padding:8px 0">No habit data yet.</p>`;
-    html+=`</div><div class="card"><div class="slabel">Goal progress</div>`;
-    if(goals.length)goals.slice(0,4).forEach(g=>{html+=`<div class="goal-item"><div class="goal-hdr"><span class="goal-name">${g.goal_name}</span><div class="goal-pcts"><span class="pct-m">M ${g.manual_progress}%</span><span class="pct-t">T ${g.task_progress}%</span></div></div><div class="dualbar"><div class="bar-m" style="width:${g.manual_progress}%"></div><div class="bar-t" style="width:${g.task_progress}%"></div></div></div>`;});
+
+    if(hasToday){
+      const d=data.daily;
+      const moodTrend=d.mood>=7?'up':d.mood>=5?'flat':'down';
+      const painHigh=Number(d.pain_overall)>=7;
+
+      // ROW 1 — premium metric cards
+      html+=`<div class="g4 anim-fade anim-fade-1">
+        <div class="metric-card-premium mood">
+          <div class="mcp-label"><i class="ti ti-mood-smile"></i> Mood</div>
+          <div class="mcp-value" style="color:var(--green)">${d.mood}</div>
+          <div class="mcp-sub">out of 10</div>
+          <div class="mcp-trend ${moodTrend}">${moodTrend==='up'?'↑ Good mood today':moodTrend==='flat'?'→ Steady':'↓ Low mood'}</div>
+          <div class="mcp-icon"><i class="ti ti-mood-smile"></i></div>
+        </div>
+        <div class="metric-card-premium energy">
+          <div class="mcp-label"><i class="ti ti-bolt"></i> Energy</div>
+          <div class="mcp-value" style="color:var(--blue)">${d.energy}</div>
+          <div class="mcp-sub">out of 10</div>
+          <div class="mcp-trend ${d.energy>=7?'up':d.energy>=5?'flat':'down'}">${d.energy>=7?'↑ High energy':d.energy>=5?'→ Moderate':'↓ Low energy'}</div>
+          <div class="mcp-icon"><i class="ti ti-bolt"></i></div>
+        </div>
+        <div class="metric-card-premium pain ${painHigh?'high':''}">
+          <div class="mcp-label"><i class="ti ti-activity"></i> Pain</div>
+          <div class="mcp-value" style="color:${painHigh?'var(--red)':'var(--amber)'}">${d.pain_overall}</div>
+          <div class="mcp-sub">${d.pain_severity||'—'} · ${d.flare_up==='Yes'?'Flare-up':'No flare-up'}</div>
+          <div class="mcp-trend ${painHigh?'down':'up'}">${painHigh?'↑ High pain — rest advised':'✓ Manageable'}</div>
+          <div class="mcp-icon"><i class="ti ti-activity"></i></div>
+        </div>
+        <div class="metric-card-premium sleep">
+          <div class="mcp-label"><i class="ti ti-moon"></i> Sleep</div>
+          <div class="mcp-value" style="color:#7C5CBF">${d.sleep_hours}<span style="font-size:16px;font-weight:400">h</span></div>
+          <div class="mcp-sub">Quality ${d.sleep_quality}/10</div>
+          <div class="mcp-trend ${d.sleep_hours>=7?'up':'down'}">${d.sleep_hours>=7?'✓ Well rested':'↓ Below 7h target'}</div>
+          <div class="mcp-icon"><i class="ti ti-moon"></i></div>
+        </div>
+      </div>`;
+    } else {
+      html+=`<div class="empty-state anim-fade"><i class="ti ti-calendar-off"></i><h3>No data for today yet</h3><p>Go to Daily Reflection to log today's mood, energy, pain, and habits.</p><button class="btn btn-primary" onclick="document.querySelector('[data-page=reflection]').click()"><i class="ti ti-pencil"></i> Add today's entry</button></div>`;
+    }
+
+    // ROW 2 — summary cards
+    const bs=streaks.length?streaks[0]:null;
+    const rlColor=fr==='FLARE'?'red':fr==='WARNING'?'amber':'green';
+    const rlText=fr==='FLARE'?'Active flare':fr==='WARNING'?'Pain spike':'Low risk';
+    html+=`<div class="g4 anim-fade anim-fade-2">
+      <div class="sum-card">
+        <div class="sum-icon-wrap green"><i class="ti ti-checklist" style="color:var(--green);font-size:20px"></i></div>
+        <div><div class="sum-val">${hc.pct}<span style="font-size:13px;font-weight:400;color:var(--text2)">%</span></div><div class="sum-label">${hc.done}/${hc.total} habits done</div></div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-icon-wrap blue"><i class="ti ti-target" style="color:var(--blue);font-size:20px"></i></div>
+        <div><div class="sum-val">${data.goal_avg_pct||0}<span style="font-size:13px;font-weight:400;color:var(--text2)">%</span></div><div class="sum-label">${goals.length} active goal${goals.length!==1?'s':''}</div></div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-icon-wrap amber"><i class="ti ti-flame" style="color:var(--amber);font-size:20px"></i></div>
+        <div><div class="sum-val" style="color:var(--amber-text)">${bs?bs.current_streak:0}<span style="font-size:13px;font-weight:400;color:var(--text2)">d</span></div><div class="sum-label">${bs?bs.habit_name:'No streaks yet'}</div></div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-icon-wrap ${rlColor}"><i class="ti ti-shield-check" style="color:var(--${rlColor==='green'?'green':rlColor==='amber'?'amber':'red'}-text);font-size:20px"></i></div>
+        <div><div class="sum-val" style="font-size:16px;padding-top:4px;color:var(--${rlColor==='green'?'green-text':rlColor==='amber'?'amber-text':'red-text'})">${rlText}</div><div class="sum-label">Flare risk</div></div>
+      </div>
+    </div>`;
+
+    // ROW 3 — chart + rings
+    if(history.length>0){
+      html+=`<div class="g65 anim-fade anim-fade-3">
+        <div class="chart-card">
+          <div class="slabel" style="margin-bottom:12px">7-day trend — mood · energy · pain</div>
+          <div style="position:relative;height:170px"><canvas id="weekChart"></canvas></div>
+          <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text2)">
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:3px;background:var(--green);display:inline-block;border-radius:2px"></span>Mood</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:3px;background:var(--blue);display:inline-block;border-radius:2px"></span>Energy</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:3px;border-top:2px dashed var(--red);display:inline-block"></span>Pain</span>
+          </div>
+        </div>
+        <div class="ring-card">
+          <div class="slabel" style="margin-bottom:12px">Progress</div>
+          <div class="ring-row">
+            <div class="ring-wrap"><canvas id="ring1" width="72" height="72"></canvas><div class="ring-val" style="font-size:14px;font-weight:600">${hc.pct}%</div><div class="ring-lbl">Habits</div></div>
+            <div class="ring-wrap"><canvas id="ring2" width="72" height="72"></canvas><div class="ring-val" style="font-size:14px;font-weight:600">${data.goal_avg_pct||0}%</div><div class="ring-lbl">Goals</div></div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // ROW 4 — streaks + habit grid + goals
+    html+=`<div class="g3 anim-fade anim-fade-4">
+      <div class="card" style="border-radius:14px">
+        <div class="slabel" style="margin-bottom:12px"><i class="ti ti-flame"></i> Streaks</div>`;
+    if(streaks.length){streaks.slice(0,5).forEach(s=>{
+      const c=s.current_streak>=7?'var(--amber-text)':s.current_streak>=3?'var(--green-text)':'var(--text2)';
+      const fire=s.current_streak>=7?'🔥':s.current_streak>=3?'✦':'·';
+      html+=`<div class="streak-card-item"><span style="font-size:12px;font-weight:500">${s.habit_name}</span><span class="streak-fire-ct" style="color:${c}">${fire} ${s.current_streak}d</span></div>`;
+    });}
+    else html+=`<p style="font-size:12px;color:var(--text2);padding:8px 0">No streaks yet — start logging!</p>`;
+    html+=`</div>`;
+
+    // Habit mini grid
+    html+=`<div class="card" style="border-radius:14px"><div class="slabel" style="margin-bottom:12px"><i class="ti ti-grid-dots"></i> Habit consistency — 7 days</div>`;
+    if(habitLog.length){
+      const names=[...new Set(habitLog.map(h=>h.habit_name))];
+      names.forEach(name=>{
+        const logs=habitLog.filter(h=>h.habit_name===name);
+        const pct=Math.round((logs.filter(h=>h.status==='Done').length/7)*100);
+        const pc=pct>=80?'var(--green-text)':pct>=50?'var(--amber-text)':'var(--red-text)';
+        html+=`<div class="hmini-row"><div class="hmini-name"><span>${name}</span><span style="color:${pc};font-weight:500">${pct}%</span></div><div class="hmini-grid">`;
+        for(let i=0;i<7;i++){const cl=i<logs.length?(logs[i].status==='Done'?'hmini-done':'hmini-miss'):'hmini-empty';html+=`<div class="hmini-cell ${cl}"></div>`;}
+        html+=`</div></div>`;
+      });
+    } else html+=`<p style="font-size:12px;color:var(--text2);padding:8px 0">No habit data yet.</p>`;
+    html+=`</div>`;
+
+    // Goals
+    html+=`<div class="card" style="border-radius:14px"><div class="slabel" style="margin-bottom:12px"><i class="ti ti-target"></i> Goal progress</div>`;
+    if(goals.length){goals.slice(0,4).forEach(g=>{
+      const mp=g.manual_progress||0,tp=g.task_progress||0;
+      html+=`<div class="goal-bar-card">
+        <div class="goal-hdr" style="margin-bottom:6px"><span class="goal-name">${g.goal_name}</span><div class="goal-pcts"><span class="pct-m">M ${mp}%</span><span class="pct-t">T ${tp}%</span></div></div>
+        <div style="height:5px;border-radius:3px;background:var(--surface2);margin-bottom:3px;overflow:hidden"><div style="height:100%;width:${mp}%;background:linear-gradient(90deg,var(--green),#2bb88a);border-radius:3px;transition:width 0.6s"></div></div>
+        <div style="height:5px;border-radius:3px;background:var(--surface2);overflow:hidden"><div style="height:100%;width:${tp}%;background:linear-gradient(90deg,var(--blue),#5BA3F5);border-radius:3px;transition:width 0.6s"></div></div>
+      </div>`;
+    });}
     else html+=`<p style="font-size:12px;color:var(--text2);padding:8px 0">No active goals yet.</p>`;
     html+=`</div></div>`;
+
     document.getElementById('dashContent').innerHTML=html;
+
+    // Charts
     if(history.length>0){
       const labels=history.map(r=>{const d=new Date(String(r.date).substring(0,10));return d.toLocaleDateString('en-US',{weekday:'short'});});
-      new Chart(document.getElementById('weekChart'),{type:'line',data:{labels,datasets:[{label:'Mood',data:history.map(r=>Number(r.mood)||0),borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',borderWidth:2,pointRadius:3,tension:0.35,fill:true},{label:'Energy',data:history.map(r=>Number(r.energy)||0),borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',borderWidth:2,pointRadius:3,tension:0.35},{label:'Pain',data:history.map(r=>Number(r.pain_overall)||0),borderColor:'#E24B4A',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.35,borderDash:[5,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:10,ticks:{stepSize:2,font:{size:10}},grid:{color:'rgba(0,0,0,0.06)'}},x:{ticks:{font:{size:10}},grid:{display:false}}}}});
-      drawRing(document.getElementById('ring1'),hc.pct,'#1D9E75');
-      drawRing(document.getElementById('ring2'),data.goal_avg_pct||0,'#378ADD');
+      new Chart(document.getElementById('weekChart'),{type:'line',data:{labels,datasets:[
+        {label:'Mood',data:history.map(r=>Number(r.mood)||0),borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.1)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#1D9E75',tension:0.4,fill:true},
+        {label:'Energy',data:history.map(r=>Number(r.energy)||0),borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.08)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#378ADD',tension:0.4,fill:true},
+        {label:'Pain',data:history.map(r=>Number(r.pain_overall)||0),borderColor:'#E24B4A',backgroundColor:'transparent',borderWidth:2,pointRadius:4,pointBackgroundColor:'#E24B4A',tension:0.4,borderDash:[5,3]}
+      ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.95)',titleColor:'#1a1a18',bodyColor:'#6b6b67',borderColor:'rgba(0,0,0,0.12)',borderWidth:1,padding:10,cornerRadius:8}},scales:{y:{min:0,max:10,ticks:{stepSize:2,font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{font:{size:10}},grid:{display:false}}}}});
+      drawRing(document.getElementById('ring1'),hc.pct,'#1D9E75',72);
+      drawRing(document.getElementById('ring2'),data.goal_avg_pct||0,'#378ADD',72);
     }
-  }catch(err){document.getElementById('dashContent').innerHTML=`<div class="empty-state"><i class="ti ti-wifi-off"></i><h3>Could not connect</h3><p style="font-size:12px;color:var(--text2);margin-bottom:12px">${err.message}</p><button class="btn" onclick="loadDashboard()"><i class="ti ti-refresh"></i> Try again</button></div>`;}
+  }catch(err){
+    document.getElementById('dashContent').innerHTML=`<div class="empty-state"><i class="ti ti-wifi-off"></i><h3>Could not connect</h3><p style="font-size:12px;color:var(--text2);margin-bottom:12px">${err.message}</p><button class="btn" onclick="loadDashboard()"><i class="ti ti-refresh"></i> Try again</button></div>`;
+  }
 }
 loadDashboard();
 initReport();
