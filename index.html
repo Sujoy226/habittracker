@@ -435,7 +435,25 @@ function toggleHabit(id,status){habitLogToday[id]=habitLogToday[id]===status?'':
 function updateProgress(){const total=habitsData.length;const done=Object.values(habitLogToday).filter(v=>v==='Done').length;const pct=total>0?Math.round((done/total)*100):0;document.getElementById('habitProgressBar').style.width=pct+'%';document.getElementById('habitProgressLabel').textContent=done+' of '+total+' done today ('+pct+'%)';document.getElementById('habitCompBadge').textContent=pct+'% today';}
 function renderManageList(){const el=document.getElementById('habitManageList');if(!habitsData.length){el.innerHTML='<p style="font-size:12px;color:var(--text2);margin-bottom:8px">No active habits.</p>';return;}el.innerHTML=habitsData.map(h=>`<div class="habit-check-row"><div class="habit-check-left"><div><div class="habit-check-name">${h.habit_name}</div><div class="habit-check-cat">${h.category}</div></div></div><div class="habit-actions"><button class="icon-btn" title="Archive" onclick="archiveHabit('${h.habit_id}','${h.habit_name}')"><i class="ti ti-archive"></i></button></div></div>`).join('');}
 async function saveHabits(){const habits=habitsData.map(h=>({habit_id:h.habit_id,habit_name:h.habit_name,status:habitLogToday[h.habit_id]||'Not Done'}));if(!habits.length){alert('No habits to save.');return;}try{const res=await apiPost({action:'saveHabitLog',data:{date:todayStr,habits}});if(res.success){const l=document.getElementById('habitProgressLabel');l.textContent+=' — ✓ Saved at '+new Date().toLocaleTimeString();l.style.color='var(--green-text)';}}catch(e){alert('Could not save: '+e.message);}}
-async function submitNewHabit(){const name=document.getElementById('newHabitName').value.trim();const cat=document.getElementById('newHabitCat').value;if(!name){alert('Please enter a habit name.');return;}try{const res=await apiPost({action:'addHabit',data:{habit_name:name,category:cat,sort_order:habitsData.length+1}});if(res.success){document.getElementById('newHabitName').value='';document.getElementById('addHabitForm').style.display='none';loadHabits();}}catch(e){alert('Could not add: '+e.message);}}
+async function submitNewHabit(){
+  const name=document.getElementById('newHabitName').value.trim();
+  const cat=document.getElementById('newHabitCat').value;
+  if(!name){alert('Please enter a habit name.');return;}
+  const btn=document.querySelector('#addHabitForm .btn-primary');
+  btn.textContent='Adding…';btn.disabled=true;
+  try{
+    const res=await apiPost({action:'addHabit',data:{habit_name:name,category:cat,sort_order:habitsData.length+1}});
+    if(res.success){
+      document.getElementById('newHabitName').value='';
+      document.getElementById('addHabitForm').style.display='none';
+      // Wait a moment for Sheet to update then reload
+      setTimeout(()=>loadHabits(),1000);
+    } else {
+      alert('Error: '+(res.error||'Unknown'));
+    }
+  }catch(e){alert('Could not add: '+e.message);}
+  finally{btn.innerHTML='<i class="ti ti-check"></i> Add';btn.disabled=false;}
+}
 async function archiveHabit(id,name){if(!confirm('Archive "'+name+'"?'))return;try{const res=await apiPost({action:'archiveHabit',data:{habit_id:id}});if(res.success)loadHabits();}catch(e){alert('Could not archive: '+e.message);}}
 
 // GOALS
