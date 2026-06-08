@@ -2,961 +2,1152 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HabitTracker</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LifeTracker</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#f5f5f3;--surface:#fff;--surface2:#f0efea;--border:rgba(0,0,0,0.12);--text:#1a1a18;--text2:#6b6b67;--text3:#9b9b97;--green:#1D9E75;--blue:#378ADD;--amber:#EF9F27;--red:#E24B4A;--green-bg:#EAF3DE;--green-text:#3B6D11;--amber-bg:#FAEEDA;--amber-text:#854F0B;--red-bg:#FCEBEB;--red-text:#A32D2D;--blue-bg:#E6F1FB;--blue-text:#185FA5;--radius:12px;--radius-sm:8px}
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
-/* DASHBOARD PREMIUM */
-.dash-hero{background:linear-gradient(135deg,#0f6e56 0%,#1D9E75 50%,#2bb88a 100%);border-radius:16px;padding:20px 24px;margin-bottom:16px;color:#fff;position:relative;overflow:hidden}
-.dash-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.07)}
-.dash-hero::after{content:'';position:absolute;bottom:-30px;right:60px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.05)}
-.dash-hero h1{font-size:22px;font-weight:600;margin-bottom:2px}
-.dash-hero p{font-size:12px;opacity:0.8}
-.dash-hero-badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.hero-badge{background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:5px;color:#fff}
-.hero-badge.warn{background:rgba(239,159,39,0.3);border-color:rgba(239,159,39,0.4)}
-.hero-badge.danger{background:rgba(226,75,74,0.3);border-color:rgba(226,75,74,0.4)}
-.hero-refresh{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:8px;padding:6px 12px;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:inherit;transition:background 0.2s}
-.hero-refresh:hover{background:rgba(255,255,255,0.25)}
-/* ANIMATED METRIC CARDS */
-.metric-card-premium{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;cursor:default}
-.metric-card-premium:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
-.metric-card-premium::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
-.metric-card-premium.mood::before{background:linear-gradient(90deg,#1D9E75,#2bb88a)}
-.metric-card-premium.energy::before{background:linear-gradient(90deg,#378ADD,#5BA3F5)}
-.metric-card-premium.pain::before{background:linear-gradient(90deg,#EF9F27,#F5B84A)}
-.metric-card-premium.pain.high::before{background:linear-gradient(90deg,#E24B4A,#F07070)}
-.metric-card-premium.sleep::before{background:linear-gradient(90deg,#7C5CBF,#A87FE8)}
-.mcp-label{font-size:11px;font-weight:500;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:0.04em}
-.mcp-value{font-size:32px;font-weight:600;line-height:1;margin-bottom:4px}
-.mcp-sub{font-size:11px;color:var(--text2)}
-.mcp-trend{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px;font-weight:500}
-.mcp-trend.up{color:#3B6D11}.mcp-trend.down{color:#A32D2D}.mcp-trend.flat{color:var(--text2)}
-.mcp-icon{position:absolute;bottom:12px;right:14px;font-size:28px;opacity:0.08}
-/* SUMMARY CARDS */
-.sum-card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;transition:transform 0.2s,box-shadow 0.2s}
-.sum-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.07)}
-.sum-icon-wrap{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.sum-icon-wrap.green{background:var(--green-bg)}.sum-icon-wrap.blue{background:var(--blue-bg)}.sum-icon-wrap.amber{background:var(--amber-bg)}.sum-icon-wrap.red{background:var(--red-bg)}
-.sum-val{font-size:20px;font-weight:600;line-height:1}
-.sum-label{font-size:11px;color:var(--text2);margin-top:2px}
-/* CHART CARD */
-.chart-card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:0}
-/* RING CARD */
-.ring-card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:16px 18px}
-/* STREAK CARD */
-.streak-card-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface2);border-radius:10px;margin-bottom:6px;transition:background 0.15s}
-.streak-card-item:hover{background:#e8e7e2}
-.streak-fire-ct{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600}
-/* GOAL BARS */
-.goal-bar-card{padding:10px 0;border-bottom:0.5px solid var(--border)}
-.goal-bar-card:last-child{border-bottom:none}
-/* HABIT MINI GRID */
-.hmini-row{margin-bottom:8px}
-.hmini-name{font-size:11px;color:var(--text2);margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
-.hmini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.hmini-cell{aspect-ratio:1;border-radius:4px;transition:transform 0.15s}
-.hmini-cell:hover{transform:scale(1.2)}
-.hmini-done{background:linear-gradient(135deg,#639922,#7aba2a)}.hmini-miss{background:#F7C1C1}.hmini-empty{background:var(--surface2)}
-/* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes countUp{from{opacity:0}to{opacity:1}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.anim-fade{animation:fadeUp 0.4s ease both}
-.anim-fade-1{animation-delay:0.05s}.anim-fade-2{animation-delay:0.1s}.anim-fade-3{animation-delay:0.15s}.anim-fade-4{animation-delay:0.2s}
-.anim-fade-5{animation-delay:0.25s}.anim-fade-6{animation-delay:0.3s}.anim-fade-7{animation-delay:0.35s}
-.nav{background:var(--surface);border-bottom:0.5px solid var(--border);padding:0 16px;display:flex;align-items:center;position:sticky;top:0;z-index:100;overflow-x:auto}
-.nav-brand{font-size:15px;font-weight:500;padding:14px 16px 14px 0;border-right:0.5px solid var(--border);margin-right:8px;white-space:nowrap}
-.nav-tab{padding:14px 14px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s;user-select:none}
-.nav-tab:hover{color:var(--text)}.nav-tab.active{color:var(--green);border-bottom-color:var(--green);font-weight:500}
-.main{padding:16px;max-width:980px;margin:0 auto}
+:root{
+  --bg:#070c18;--bg2:#0b1020;--bg3:#0f1628;
+  --g:rgba(255,255,255,.043);--g2:rgba(255,255,255,.075);--g3:rgba(255,255,255,.11);
+  --b:rgba(255,255,255,.07);--b2:rgba(255,255,255,.14);
+  --t:#dde8ff;--t2:#7a8db5;--t3:#374260;
+  --grn:#00d4a0;--grng:rgba(0,212,160,.2);
+  --blu:#4f8ef7;--blug:rgba(79,142,247,.2);
+  --pur:#a78bfa;--purg:rgba(167,139,250,.2);
+  --amb:#f59e0b;--ambg:rgba(245,158,11,.2);
+  --red:#ef4444;--redg:rgba(239,68,68,.2);
+  --cyn:#06b6d4;--r:12px;--rs:9px;--rxs:7px;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t);font-size:13px}
+.app{display:grid;grid-template-columns:196px 1fr 254px;height:100vh}
+
+/* ══ LEFT SIDEBAR ══ */
+.lsb{background:var(--bg2);border-right:1px solid var(--b);display:flex;flex-direction:column;overflow-y:auto}
+.brand{padding:15px 14px 13px;border-bottom:1px solid var(--b)}
+.brand-row{display:flex;align-items:center;gap:8px}
+.brand-ico{width:28px;height:28px;background:linear-gradient(135deg,var(--grn),var(--blu));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.brand-name{font-size:13px;font-weight:700;background:linear-gradient(135deg,var(--grn),var(--blu));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand-sub{font-size:9px;color:var(--t3);margin-top:1px}
+.nav-g{padding:9px 9px 2px}
+.nav-lbl{font-size:8.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;padding:0 5px;margin-bottom:4px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:var(--rxs);color:var(--t2);cursor:pointer;font-size:12px;border:none;background:none;width:100%;text-align:left;font-family:inherit;transition:all .17s;margin-bottom:1px}
+.ni i{font-size:15px;flex-shrink:0}
+.ni:hover{background:var(--g2);color:var(--t)}
+.ni.active{background:linear-gradient(135deg,rgba(0,212,160,.13),rgba(79,142,247,.13));color:var(--grn);border:1px solid rgba(0,212,160,.2)}
+.sb-sp{flex:1}
+.streak-box{margin:8px 10px 7px;background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(239,68,68,.08));border:1px solid rgba(245,158,11,.22);border-radius:var(--rs);padding:11px 10px;text-align:center}
+.streak-ico{font-size:20px;display:block;margin-bottom:3px}
+.streak-num{font-size:30px;font-weight:800;color:var(--amb);line-height:1}
+.streak-lbl{font-size:9px;color:var(--t2);margin-top:2px}
+.streak-sub{font-size:10px;color:var(--amb);margin-top:4px;font-weight:600}
+.mini-cal{margin:0 10px 7px;background:var(--g);border:1px solid var(--b);border-radius:var(--rs);padding:9px 10px}
+.mcal-top{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:600;margin-bottom:6px}
+.mcal-nav{background:none;border:none;color:var(--t2);cursor:pointer;font-size:10px}
+.mcal-days{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px}
+.mcal-dh{font-size:7.5px;color:var(--t3);text-align:center;font-weight:700;padding:1px 0}
+.mcal-cells{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+.mcc{font-size:8px;text-align:center;padding:2.5px 0;border-radius:3px;color:var(--t2)}
+.mcc.td{background:var(--grn);color:#000;font-weight:800;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.mcc.ev{color:var(--blu);font-weight:700}
+.mcc.em{color:var(--t3)}
+.cal-leg{display:flex;align-items:center;justify-content:space-between;margin-top:6px;font-size:8px;color:var(--t3)}
+.cal-leg-dots{display:flex;gap:2px}
+.cld{width:7px;height:7px;border-radius:50%}
+.user-prof{margin:0 10px 10px;background:var(--g);border:1px solid var(--b);border-radius:var(--rs);padding:8px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:background .17s}
+.user-prof:hover{background:var(--g2)}
+.user-ava{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.user-name{font-size:11px;font-weight:600}
+.user-sub{font-size:9px;color:var(--t2)}
+
+/* ══ MAIN ══ */
+.main{overflow-y:auto;overflow-x:hidden;background:var(--bg);position:relative}
+.aur{position:absolute;top:0;left:0;right:0;height:230px;pointer-events:none;z-index:0;overflow:hidden}
+.aur-inner{position:absolute;inset:0;background:
+  radial-gradient(ellipse 55% 60% at 15% 35%,rgba(0,190,120,.26) 0%,transparent 65%),
+  radial-gradient(ellipse 45% 50% at 65% 20%,rgba(100,50,220,.22) 0%,transparent 65%),
+  radial-gradient(ellipse 60% 40% at 80% 45%,rgba(170,80,230,.16) 0%,transparent 65%),
+  radial-gradient(ellipse 35% 35% at 40% 60%,rgba(50,100,240,.14) 0%,transparent 65%),
+  linear-gradient(180deg,rgba(5,8,18,.5) 0%,var(--bg) 80%);
+  animation:aur 9s ease-in-out infinite alternate}
+@keyframes aur{0%{opacity:.75;transform:scaleX(1)}100%{opacity:1;transform:scaleX(1.04)}}
+.aur-mtn{position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(180deg,transparent 0%,var(--bg) 100%)}
+.main-inner{position:relative;z-index:1;padding:13px 13px 10px;overflow-y:auto;height:100%}
 .page{display:none}.page.active{display:block}
-.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
-.card-title{font-size:13px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.metric-card{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px}
-.metric-label{font-size:11px;color:var(--text2);margin-bottom:4px;display:flex;align-items:center;gap:4px}
-.metric-value{font-size:22px;font-weight:500;line-height:1}
-.metric-sub{font-size:11px;color:var(--text2);margin-top:3px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
-.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
-.g65{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:12px}
-@media(max-width:700px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.g65,.g2{grid-template-columns:1fr}}
-.slabel{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px}
-.tl{display:inline-block;width:8px;height:8px;border-radius:50%}
-.tl-g{background:var(--green)}.tl-a{background:var(--amber)}.tl-r{background:var(--red)}
-.badge{border-radius:6px;padding:3px 10px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:4px}
-.badge-g{background:var(--green-bg);color:var(--green-text)}.badge-a{background:var(--amber-bg);color:var(--amber-text)}.badge-r{background:var(--red-bg);color:var(--red-text)}.badge-b{background:var(--blue-bg);color:var(--blue-text)}
-.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
-.ph h1{font-size:18px;font-weight:500}.ph p{font-size:12px;color:var(--text2);margin-top:2px}
-.streak-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:6px}
-.streak-name{font-size:12px;font-weight:500}
-.streak-ct{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:500}
-.hgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
-.hcell{aspect-ratio:1;border-radius:3px}
-.hc-done{background:#639922}.hc-miss{background:#F7C1C1}.hc-empty{background:var(--surface2)}
-.hrow{margin-bottom:9px}
-.hrow-name{font-size:11px;color:var(--text2);margin-bottom:3px;display:flex;justify-content:space-between}
-.goal-item{margin-bottom:10px}
-.goal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-.goal-name{font-size:12px;font-weight:500}
-.goal-pcts{display:flex;gap:5px;font-size:10px}
-.pct-m{background:var(--green-bg);color:var(--green-text);padding:2px 6px;border-radius:4px}
-.pct-t{background:var(--blue-bg);color:var(--blue-text);padding:2px 6px;border-radius:4px}
-.dualbar{height:6px;border-radius:3px;background:var(--surface2);position:relative;overflow:hidden;margin-bottom:2px}
-.bar-m{height:100%;border-radius:3px;position:absolute;background:var(--green);opacity:0.35}
-.bar-t{height:100%;border-radius:3px;position:absolute;top:0;background:var(--blue);opacity:0.7}
-.empty-state{text-align:center;padding:40px 20px}
-.empty-state i{font-size:40px;color:var(--text3);display:block;margin-bottom:12px}
-.empty-state h3{font-size:15px;font-weight:500;margin-bottom:6px}
-.empty-state p{font-size:13px;color:var(--text2);margin-bottom:16px}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;cursor:pointer;transition:background 0.15s;font-family:inherit}
-.btn:hover{background:var(--surface2)}.btn-primary{background:var(--green);color:#fff;border-color:var(--green)}.btn-primary:hover{background:#0F6E56}.btn-sm{padding:5px 12px;font-size:12px}.btn-danger{background:var(--red-bg);color:var(--red-text);border-color:var(--red)}
-.loading{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:13px;padding:20px 0}
-.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ring-row{display:flex;gap:16px;justify-content:space-around;padding:8px 0}
-.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}
-.ring-lbl{font-size:11px;color:var(--text2);text-align:center}.ring-val{font-size:12px;font-weight:500;text-align:center}
+
+/* HEADER */
+.dash-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.greeting h1{font-size:22px;font-weight:700;margin-bottom:2px;text-shadow:0 2px 20px rgba(0,212,160,.25)}
+.greeting p{font-size:11px;color:var(--t2)}
+.quote-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:9px;max-width:220px;backdrop-filter:blur(10px)}
+.quote-txt{font-size:10px;color:var(--t2);font-style:italic;line-height:1.4;flex:1}
+.rfbtn{background:rgba(255,255,255,.06);border:1px solid var(--b2);border-radius:7px;padding:5px 11px;color:var(--t2);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;transition:all .17s;white-space:nowrap;backdrop-filter:blur(6px)}
+.rfbtn:hover{background:var(--g2);color:var(--t)}
+
+/* HEALTH SCORE ROW */
+.hs-row{display:grid;grid-template-columns:auto auto 1fr 1fr 1fr 1fr;gap:9px;margin-bottom:10px}
+.hsc{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;backdrop-filter:blur(14px);position:relative;overflow:hidden}
+.hsc::before{content:'';position:absolute;top:-35px;left:-35px;width:120px;height:120px;background:rgba(0,212,160,.18);border-radius:50%;filter:blur(28px);pointer-events:none}
+.gauge-w{position:relative;flex-shrink:0}
+.gauge-c{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.gauge-n{font-size:24px;font-weight:800;color:var(--grn);line-height:1}
+.gauge-d{font-size:8.5px;color:var(--t2)}
+.hsc-info h4{font-size:9.5px;color:var(--t2);margin-bottom:3px}
+.hsc-cls{font-size:14px;font-weight:700;color:var(--grn)}
+.hsc-tr{font-size:9.5px;color:var(--t2);margin-top:3px}
+.rec{background:linear-gradient(135deg,rgba(79,142,247,.12),rgba(167,139,250,.12));border:1px solid rgba(79,142,247,.22);border-radius:var(--r);padding:13px 14px;min-width:112px;backdrop-filter:blur(10px)}
+.rec-lbl{font-size:9.5px;color:var(--t2);margin-bottom:5px;display:flex;align-items:center;gap:4px}
+.rec-val{font-size:24px;font-weight:800;color:var(--blu);line-height:1;margin-bottom:3px}
+.rec-sub{font-size:9px;color:var(--t2);line-height:1.4}
+.mc{background:rgba(255,255,255,.043);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:11px 12px;backdrop-filter:blur(8px);transition:transform .18s,border-color .18s;cursor:default;position:relative;overflow:hidden}
+.mc:hover{transform:translateY(-2px);border-color:var(--b2)}
+.mc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--r) var(--r) 0 0}
+.mc.mood::after{background:linear-gradient(90deg,var(--grn),#00ecb8)}
+.mc.energy::after{background:linear-gradient(90deg,var(--blu),#7ab6ff)}
+.mc.pain::after{background:linear-gradient(90deg,var(--amb),#fbbf24)}
+.mc.sleep::after{background:linear-gradient(90deg,var(--pur),#c4b5fd)}
+.mc-lbl{font-size:9.5px;color:var(--t2);margin-bottom:5px;display:flex;align-items:center;gap:4px;font-weight:500}
+.mc-val{font-size:20px;font-weight:700;line-height:1;margin-bottom:2px}
+.mc-sub{font-size:9.5px;color:var(--t2);margin-bottom:4px}
+.mc-tr{font-size:9.5px;font-weight:600;margin-bottom:4px}
+.up{color:var(--grn)}.dn{color:var(--red)}.fl{color:var(--amb)}
+
+/* SUMMARY ROW */
+.sum-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+.sc{background:rgba(255,255,255,.043);border:1px solid rgba(255,255,255,.09);border-radius:var(--rs);padding:10px 12px;display:flex;align-items:center;gap:9px;transition:all .17s;backdrop-filter:blur(6px)}
+.sc:hover{background:var(--g2);border-color:var(--b2)}
+.sc-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sc-val{font-size:16px;font-weight:700;line-height:1;margin-bottom:2px}
+.sc-lbl{font-size:9.5px;color:var(--t2)}
+.sc-badge{font-size:8.5px;font-weight:600;padding:1.5px 6px;border-radius:8px;margin-top:3px;display:inline-block}
+
+/* MID GRID — trend + weekly stats */
+.mid-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:9px;margin-bottom:9px}
+.cc{background:rgba(255,255,255,.043);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:12px 14px;backdrop-filter:blur(8px)}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ct{font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px}
+.ca{font-size:9.5px;color:var(--blu);cursor:pointer}
+
+/* WEEKLY STATS GRID */
+.wstat-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.wstat{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:var(--rs);padding:9px 10px;transition:border-color .17s}
+.wstat:hover{border-color:rgba(255,255,255,.14)}
+.wstat-lbl{font-size:9px;color:var(--t2);margin-bottom:4px;display:flex;align-items:center;gap:3px}
+.wstat-val{font-size:17px;font-weight:700;line-height:1;margin-bottom:2px}
+.wstat-bar{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;margin-top:5px}
+.wstat-fill{height:100%;border-radius:2px}
+
+/* BOTTOM GRID */
+.bot-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:10px}
+/* HEATMAP */
+.hm-dates{display:flex;justify-content:space-between;font-size:8px;color:var(--t3);margin-bottom:4px;padding-left:52px}
+.hm-grid{display:flex;flex-direction:column;gap:3px}
+.hm-row{display:flex;align-items:center;gap:3px}
+.hm-lbl{font-size:9px;color:var(--t2);width:50px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-cells{display:flex;gap:2px;flex:1}
+.hmc{width:10px;height:10px;border-radius:2px;cursor:pointer;transition:transform .15s}
+.hmc:hover{transform:scale(1.4)}
+.hm-leg{display:flex;align-items:center;gap:4px;font-size:8px;color:var(--t3);margin-top:7px;justify-content:flex-end}
+/* AI INSIGHTS */
+.ins-item{display:flex;gap:8px;padding:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:var(--rs);margin-bottom:6px;transition:border-color .17s}
+.ins-item:last-child{margin-bottom:0}
+.ins-item:hover{border-color:rgba(255,255,255,.14)}
+.ins-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ins-txt{font-size:10.5px;line-height:1.5;margin-bottom:3px}
+.ins-conf{font-size:8.5px;font-weight:600;display:flex;align-items:center;gap:5px}
+.cbar{height:2px;width:50px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
+.cfill{height:100%;border-radius:2px}
+/* TRIGGERS */
+.trig-row{display:flex;align-items:center;gap:11px}
+.trig-leg{display:flex;flex-direction:column;gap:5px;flex:1}
+.trig-item{display:flex;align-items:center;gap:5px;font-size:9.5px}
+.trig-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.trig-pct{margin-left:auto;font-weight:700;font-size:9.5px}
+/* GOALS */
+.goals-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.goals-row{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.gc{background:rgba(255,255,255,.043);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:12px 13px;transition:all .17s;backdrop-filter:blur(6px)}
+.gc:hover{background:var(--g2);border-color:var(--b2)}
+.gc-name{font-size:11.5px;font-weight:600;margin-bottom:2px}
+.gc-target{font-size:9px;color:var(--t2);margin-bottom:9px}
+.gc-body{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.gc-rw{position:relative;flex-shrink:0}
+.gc-rv{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;font-weight:800;text-align:center;line-height:1}
+.gc-info{flex:1}
+.gc-pr{display:flex;justify-content:space-between;font-size:9px;margin-bottom:2px}
+.gc-tr{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.gc-fm{height:100%;border-radius:2px}
+.gc-ft{height:100%;border-radius:2px;background:var(--blu)}
+.gc-badge{font-size:9px;font-weight:600;padding:2px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:3px}
+.on{background:rgba(0,212,160,.14);color:var(--grn)}
+.risk{background:rgba(245,158,11,.14);color:var(--amb)}
+
+/* ══ OTHER PAGES ══ */
+.page-hdr{margin-bottom:18px}
+.page-hdr h1{font-size:20px;font-weight:700;margin-bottom:3px}
+.page-hdr p{font-size:11px;color:var(--t2)}
+.form-card{background:rgba(255,255,255,.043);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;backdrop-filter:blur(8px)}
+.form-title{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
-.form-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
-@media(max-width:600px){.form-row,.form-row-3,.form-row-4{grid-template-columns:1fr}}
 .field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:12px;font-weight:500;color:var(--text2)}
-.field input,.field select,.field textarea{padding:8px 10px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:var(--surface);color:var(--text);outline:none;transition:border-color 0.15s}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green)}
-.field textarea{resize:vertical;min-height:80px}
+.field label{font-size:11px;font-weight:500;color:var(--t2)}
+.field input,.field select,.field textarea{padding:8px 10px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);font-size:12px;font-family:inherit;background:rgba(255,255,255,.05);color:var(--t);outline:none;transition:border-color .17s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--grn)}
+.field select option{background:#0f1628;color:var(--t)}
+.field textarea{resize:vertical;min-height:70px}
 .slider-wrap{display:flex;align-items:center;gap:10px}
-.slider-wrap input[type=range]{flex:1;accent-color:var(--green);height:4px}
-.slider-val{font-size:14px;font-weight:500;min-width:24px;text-align:center}
-.toggle-row{display:flex;gap:8px;flex-wrap:wrap}
-.toggle-btn{padding:6px 14px;border-radius:20px;border:0.5px solid var(--border);background:var(--surface2);font-size:12px;cursor:pointer;transition:all 0.15s;font-family:inherit}
-.toggle-btn.active-yes{background:var(--red-bg);color:var(--red-text);border-color:var(--red)}
-.toggle-btn.active-no{background:var(--green-bg);color:var(--green-text);border-color:var(--green)}
-.toggle-btn.active-mild{background:#FFF9E6;color:#7A5000;border-color:#EFC050}
-.toggle-btn.active-moderate{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber)}
-.toggle-btn.active-severe{background:var(--red-bg);color:var(--red-text);border-color:var(--red)}
-.section-divider{height:0.5px;background:var(--border);margin:6px 0 16px}
-.today-badge{background:var(--blue-bg);color:var(--blue-text);border-radius:6px;padding:4px 12px;font-size:12px;font-weight:500}
-.save-bar{position:sticky;bottom:0;background:var(--surface);border-top:0.5px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:50}
-.save-status{font-size:12px;color:var(--text2)}
-.med-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;padding:10px;background:var(--surface2);border-radius:var(--radius-sm);flex-wrap:wrap}
-.med-row input{flex:1;min-width:80px;padding:6px 8px;border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--surface)}
-.med-remove{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;font-size:16px}
-.habit-check-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:8px;gap:10px}
-.habit-check-left{display:flex;align-items:center;gap:10px;flex:1}
-.habit-check-name{font-size:13px;font-weight:500}.habit-check-cat{font-size:11px;color:var(--text3)}
-.habit-check-right{display:flex;align-items:center;gap:8px}
-.check-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.15s;flex-shrink:0}
-.check-btn.done{background:var(--green);border-color:var(--green);color:#fff}.check-btn.miss{background:var(--red-bg);border-color:var(--red);color:var(--red-text)}
-.progress-bar-wrap{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-top:8px}
-.progress-bar{height:100%;border-radius:3px;background:var(--green);transition:width 0.4s}
-.add-habit-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px;background:var(--surface2);border-radius:var(--radius-sm);margin-top:10px}
-.add-habit-form input,.add-habit-form select{padding:7px 10px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:var(--surface);outline:none}
-.add-habit-form input{flex:1;min-width:140px}
-.icon-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;font-size:16px;border-radius:4px}
-.icon-btn:hover{color:var(--text);background:var(--surface)}
-/* GOALS */
-.goal-card{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px}
-.goal-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
-.goal-card-name{font-size:14px;font-weight:500}
-.goal-card-cat{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--blue-bg);color:var(--blue-text)}
-.goal-card-desc{font-size:12px;color:var(--text2);margin-bottom:10px}
-.goal-card-meta{display:flex;gap:12px;font-size:11px;color:var(--text3);margin-bottom:10px;flex-wrap:wrap}
-.goal-progress-dual{display:flex;gap:8px;align-items:center;margin-bottom:6px}
-.dual-label{font-size:11px;color:var(--text2);min-width:70px}
-.dual-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.dual-fill-m{height:100%;background:var(--green);border-radius:3px;opacity:0.5}
-.dual-fill-t{height:100%;background:var(--blue);border-radius:3px}
-.milestone-list{margin-top:10px;padding-top:10px;border-top:0.5px solid var(--border)}
-.milestone-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px}
-.ms-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s}
-.ms-check.done{background:var(--green);border-color:var(--green);color:#fff}
-.task-list{margin-left:24px;margin-top:4px}
-.task-item{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;color:var(--text2)}
-.task-check{width:13px;height:13px;border-radius:3px;border:1.5px solid var(--border);cursor:pointer;flex-shrink:0;transition:all 0.15s}
-.task-check.done{background:var(--green);border-color:var(--green)}
-.add-goal-form{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;margin-top:10px}
-.add-goal-form .form-row{margin-bottom:10px}
-/* PATTERNS */
-.insight-card{background:var(--blue-bg);border:0.5px solid rgba(55,138,221,0.2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;font-size:13px;color:var(--text);display:flex;align-items:flex-start;gap:10px}
-.insight-icon{font-size:18px;color:var(--blue-text);flex-shrink:0;margin-top:1px}
-.corr-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px}
-.corr-label{min-width:180px;color:var(--text2)}
-.corr-bar-wrap{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
-.corr-bar{height:100%;border-radius:4px}
-.corr-val{min-width:40px;text-align:right;font-weight:500;font-size:12px}
-/* REPORTS */
-.report-section{margin-bottom:18px}
-.report-section h3{font-size:13px;font-weight:500;margin-bottom:8px;color:var(--text2);text-transform:uppercase;letter-spacing:0.04em}
-.report-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:13px}
-.report-row:last-child{border-bottom:none}
-/* SETTINGS */
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:0.5px solid var(--border)}
-.settings-row:last-child{border-bottom:none}
-.settings-label{font-size:13px;font-weight:500}
-.settings-desc{font-size:11px;color:var(--text2);margin-top:2px}
-.settings-input{padding:6px 10px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:var(--surface);outline:none;min-width:120px}
-.settings-input:focus{border-color:var(--green)}
+.slider-wrap input[type=range]{flex:1;accent-color:var(--grn);height:4px}
+.slider-val{font-size:14px;font-weight:600;min-width:24px;text-align:center;color:var(--grn)}
+.toggle-row{display:flex;gap:7px;flex-wrap:wrap}
+.tog{padding:5px 13px;border-radius:16px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);font-size:11px;cursor:pointer;font-family:inherit;transition:all .17s;color:var(--t2)}
+.tog.ayes{background:rgba(239,68,68,.15);color:#ef4444;border-color:rgba(239,68,68,.4)}
+.tog.ano{background:rgba(0,212,160,.12);color:var(--grn);border-color:rgba(0,212,160,.35)}
+.tog.amild{background:rgba(245,158,11,.1);color:var(--amb);border-color:rgba(245,158,11,.35)}
+.tog.amod{background:rgba(245,158,11,.15);color:var(--amb);border-color:var(--amb)}
+.tog.asev{background:rgba(239,68,68,.15);color:var(--red);border-color:var(--red)}
+.save-bar{position:sticky;bottom:0;background:rgba(7,12,24,.95);border-top:1px solid rgba(255,255,255,.08);padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;backdrop-filter:blur(10px);z-index:50}
+.save-status{font-size:11px;color:var(--t2)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:var(--t);font-size:12px;cursor:pointer;transition:all .17s;font-family:inherit}
+.btn:hover{background:var(--g2);border-color:var(--b2)}
+.btn-primary{background:var(--grn);color:#000;border-color:var(--grn);font-weight:600}
+.btn-primary:hover{background:#00b388;border-color:#00b388}
+.btn-sm{padding:5px 11px;font-size:11px}
+.med-row{display:flex;gap:7px;align-items:center;padding:8px 10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:var(--rs);margin-bottom:7px;flex-wrap:wrap}
+.med-row input,.med-row select{flex:1;min-width:60px;padding:5px 8px;border:1px solid rgba(255,255,255,.1);border-radius:6px;font-size:11px;font-family:inherit;background:rgba(255,255,255,.05);color:var(--t);outline:none}
+.med-rm{background:none;border:none;color:var(--t3);cursor:pointer;font-size:15px}
+.med-rm:hover{color:var(--red)}
+/* Habit check */
+.habit-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:var(--rs);margin-bottom:7px;transition:border-color .17s}
+.habit-row:hover{border-color:rgba(255,255,255,.13)}
+.habit-lbl{font-size:12px;font-weight:500}
+.habit-cat{font-size:9.5px;color:var(--t3);margin-top:1px}
+.hck-btns{display:flex;gap:7px}
+.hck{width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(255,255,255,.13);background:rgba(255,255,255,.04);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;flex-shrink:0}
+.hck.done{background:var(--grn);border-color:var(--grn);color:#000}
+.hck.miss{background:rgba(239,68,68,.2);border-color:var(--red);color:var(--red)}
+.prog-bar{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-top:8px}
+.prog-fill{height:100%;border-radius:3px;background:var(--grn);transition:width .4s}
+/* Goals page */
+.goal-card{background:rgba(255,255,255,.043);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:14px;margin-bottom:9px;transition:border-color .17s}
+.goal-card:hover{border-color:rgba(255,255,255,.14)}
+.goal-card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.goal-card-name{font-size:13px;font-weight:600}
+.goal-cat-badge{font-size:9.5px;padding:2px 8px;border-radius:8px;background:var(--blug);color:var(--blu)}
+.goal-meta{display:flex;gap:12px;font-size:10px;color:var(--t3);margin-bottom:10px;flex-wrap:wrap}
+.goal-prog-row{display:flex;gap:8px;align-items:center;margin-bottom:5px}
+.goal-prog-lbl{font-size:10px;color:var(--t2);min-width:80px}
+.goal-prog-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.goal-prog-fill{height:100%;border-radius:3px}
+/* Settings */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.setting-row:last-child{border:none}
+.setting-lbl{font-size:12px;font-weight:500}
+.setting-desc{font-size:10px;color:var(--t2);margin-top:2px}
+.setting-input{padding:6px 10px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);font-size:12px;font-family:inherit;background:rgba(255,255,255,.05);color:var(--t);outline:none;min-width:120px}
+.setting-input:focus{border-color:var(--grn)}
+
+/* ══ RIGHT SIDEBAR ══ */
+.rsb{background:var(--bg2);border-left:1px solid var(--b);overflow-y:auto;padding:13px 11px}
+.rs{margin-bottom:14px}
+.rs-hdr{font-size:9.5px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.rs-act{font-size:9px;color:var(--blu);cursor:pointer;font-weight:500;text-transform:none;letter-spacing:0}
+.ev-item{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start}
+.ev-time{font-size:9px;color:var(--t2);min-width:44px;padding-top:1px;flex-shrink:0}
+.ev-dot{width:6px;height:6px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.ev-title{font-size:11px;font-weight:500;margin-bottom:1px}
+.ev-sub{font-size:9px;color:var(--t2)}
+.ai-rec{background:linear-gradient(135deg,rgba(88,28,220,.28),rgba(37,99,235,.22));border:1px solid rgba(139,92,246,.3);border-radius:var(--rs);padding:11px 12px;position:relative;overflow:hidden}
+.ai-rec::after{content:'✦✦';position:absolute;right:8px;top:6px;font-size:18px;color:rgba(167,139,250,.35);line-height:1}
+.ai-rec-hdr{font-size:10px;font-weight:600;color:var(--pur);margin-bottom:5px;display:flex;align-items:center;gap:4px}
+.ai-rec-txt{font-size:10.5px;color:rgba(200,215,255,.8);line-height:1.5;margin-bottom:7px}
+.ai-rec-link{font-size:9.5px;color:rgba(167,139,250,.9);cursor:pointer;display:flex;align-items:center;gap:3px}
+.pred-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--rs);padding:8px 10px}
+.pred-row{display:flex;align-items:center;justify-content:space-between;padding:5.5px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.pred-row:last-of-type{border:none}
+.pred-lbl{font-size:9.5px;color:var(--t2);display:flex;align-items:center;gap:4px}
+.pred-val{font-size:11px;font-weight:700}
+.pred-badge{font-size:8.5px;font-weight:600;padding:2px 6px;border-radius:7px}
+.conf-sect{padding-top:6px;border-top:1px solid rgba(255,255,255,.06);margin-top:1px}
+.conf-lbl{font-size:8.5px;color:var(--t2);margin-bottom:3px;display:flex;align-items:center;gap:4px}
+.conf-tr{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.conf-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--blu),var(--pur))}
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.qa-btn{background:rgba(255,255,255,.043);border:1px solid rgba(255,255,255,.09);border-radius:var(--rxs);padding:8px 4px;text-align:center;cursor:pointer;font-family:inherit;transition:all .17s}
+.qa-btn:hover{background:var(--g2);border-color:var(--b2)}
+.qa-btn i{font-size:18px;color:var(--blu);display:block;margin-bottom:3px}
+.qa-btn span{font-size:8.5px;color:var(--t2)}
+.med-card{background:rgba(255,255,255,.043);border:1px solid rgba(255,255,255,.09);border-radius:var(--rs);padding:9px 11px;display:flex;align-items:center;gap:8px}
+.med-ico{width:30px;height:30px;background:rgba(139,92,246,.22);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1px solid rgba(139,92,246,.35)}
+.med-name-s{font-size:11px;font-weight:600}
+.med-dose-s{font-size:9px;color:var(--t2)}
+.med-btn{margin-left:auto;font-size:8.5px;color:var(--grn);border:1px solid rgba(0,212,160,.3);background:rgba(0,212,160,.1);border-radius:5px;padding:3px 7px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.tl-item{display:flex;gap:8px;margin-bottom:7px}
+.tl-dot{width:7px;height:7px;border-radius:50%;margin-top:3px;flex-shrink:0}
+.tl-body{flex:1}
+.tl-txt{font-size:10px;line-height:1.4}
+.tl-meta{font-size:8.5px;color:var(--t3);margin-top:1px}
+
+/* LOADING */
+.ldg{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--t2);padding:30px;font-size:12px;grid-column:span 6}
+.sp-anim{width:14px;height:14px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--grn);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseGrn{0%,100%{box-shadow:0 0 0 0 rgba(0,212,160,0)}50%{box-shadow:0 0 0 8px rgba(0,212,160,.1)}}
+.a1{animation:fadeUp .32s .04s both}.a2{animation:fadeUp .32s .09s both}
+.a3{animation:fadeUp .32s .14s both}.a4{animation:fadeUp .32s .19s both}.a5{animation:fadeUp .32s .24s both}
+.pls{animation:pulseGrn 2.8s ease-in-out infinite}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+::-webkit-scrollbar-track{background:transparent}
 </style>
 </head>
 <body>
-<nav class="nav">
-  <span class="nav-brand"><i class="ti ti-activity-heartbeat"></i> HabitTracker</span>
-  <span class="nav-tab active" data-page="dashboard"><i class="ti ti-home"></i> Dashboard</span>
-  <span class="nav-tab" data-page="reflection"><i class="ti ti-pencil"></i> Daily reflection</span>
-  <span class="nav-tab" data-page="habits"><i class="ti ti-checklist"></i> Habits</span>
-  <span class="nav-tab" data-page="goals"><i class="ti ti-target"></i> Goals</span>
-  <span class="nav-tab" data-page="patterns"><i class="ti ti-chart-dots"></i> Patterns</span>
-  <span class="nav-tab" data-page="reports"><i class="ti ti-file-analytics"></i> Reports</span>
-  <span class="nav-tab" data-page="settings"><i class="ti ti-settings"></i> Settings</span>
-</nav>
+<div class="app">
+
+<!-- ══ LEFT SIDEBAR ══ -->
+<aside class="lsb">
+  <div class="brand">
+    <div class="brand-row">
+      <div class="brand-ico">❤</div>
+      <div><div class="brand-name">LifeTracker</div><div class="brand-sub">Health · Habits · Goals</div></div>
+    </div>
+  </div>
+  <div class="nav-g">
+    <div class="nav-lbl">Main</div>
+    <button class="ni active" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
+    <button class="ni" onclick="nav('reflection',this)"><i class="ti ti-pencil"></i>Daily Reflection</button>
+    <button class="ni" onclick="nav('habits',this)"><i class="ti ti-checklist"></i>Habits</button>
+    <button class="ni" onclick="nav('goals',this)"><i class="ti ti-target"></i>Goals</button>
+  </div>
+  <div class="nav-g">
+    <div class="nav-lbl">Intelligence</div>
+    <button class="ni" onclick="nav('academic',this)"><i class="ti ti-school"></i>Academic Progress</button>
+    <button class="ni" onclick="nav('arthritis',this)"><i class="ti ti-activity"></i>Arthritis Intel</button>
+    <button class="ni" onclick="nav('patterns',this)"><i class="ti ti-chart-dots"></i>Pattern Analysis</button>
+  </div>
+  <div class="nav-g">
+    <div class="nav-lbl">More</div>
+    <button class="ni" onclick="nav('reports',this)"><i class="ti ti-file-analytics"></i>Reports</button>
+    <button class="ni" onclick="nav('settings',this)"><i class="ti ti-settings"></i>Settings</button>
+  </div>
+  <div class="sb-sp"></div>
+  <div class="streak-box">
+    <span class="streak-ico">🔥</span>
+    <div class="streak-num" id="strkN">15</div>
+    <div class="streak-lbl">Day Streak</div>
+    <div class="streak-sub" id="strkS">Keep going! 🔥</div>
+  </div>
+  <div class="mini-cal">
+    <div class="mcal-top"><button class="mcal-nav">◀</button><span id="calTitle">Jun 2026</span><button class="mcal-nav">▶</button></div>
+    <div class="mcal-days" id="calDays"></div>
+    <div class="mcal-cells" id="calCells"></div>
+    <div class="cal-leg"><span>Less</span><div class="cal-leg-dots"><div class="cld" style="background:#1a3a2a"></div><div class="cld" style="background:#1e6048"></div><div class="cld" style="background:var(--grn)"></div></div><span>More</span></div>
+  </div>
+  <div class="user-prof">
+    <div class="user-ava">S</div>
+    <div><div class="user-name">Sujoy</div><div class="user-sub">View Profile</div></div>
+    <i class="ti ti-chevron-down" style="margin-left:auto;font-size:12px;color:var(--t3)"></i>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
 <main class="main">
+  <div class="aur"><div class="aur-inner"></div><div class="aur-mtn"></div></div>
+  <div class="main-inner">
 
-<!-- DASHBOARD -->
-<div id="page-dashboard" class="page active">
-  <div class="dash-hero">
-    <button class="hero-refresh" onclick="loadDashboard()"><i class="ti ti-refresh"></i> Refresh</button>
-    <h1 id="dashGreeting">Good morning</h1>
-    <p id="dateStr"></p>
-    <div class="dash-hero-badges">
-      <span class="hero-badge"><i class="ti ti-calendar-week"></i> <span id="weekBadge"></span></span>
-      <span class="hero-badge" id="flareBadge"></span>
+  <!-- ── DASHBOARD ── -->
+  <div id="page-dashboard" class="page active">
+    <div class="dash-hdr">
+      <div class="greeting"><h1 id="greeting">Good evening, Sujoy 👋</h1><p id="dateStr"></p></div>
+      <div class="quote-card"><div class="quote-txt">"Small progress each day leads to big results."</div><canvas id="qSp" width="54" height="26"></canvas></div>
+      <button class="rfbtn" onclick="loadAll()"><i class="ti ti-refresh"></i>Refresh</button>
     </div>
+    <div class="hs-row a1" id="hsRow"><div class="ldg"><div class="sp-anim"></div>Loading…</div></div>
+    <div class="sum-row a2" id="sumRow"></div>
+    <div class="mid-grid a3">
+      <div class="cc">
+        <div class="ch">
+          <div class="ct"><i class="ti ti-chart-line" style="color:var(--blu)"></i>7-Day Trends</div>
+          <div style="display:flex;gap:10px;font-size:9px;color:var(--t2)">
+            <span style="display:flex;align-items:center;gap:3px"><span style="width:12px;height:2px;background:var(--grn);display:inline-block;border-radius:1px"></span>Mood</span>
+            <span style="display:flex;align-items:center;gap:3px"><span style="width:12px;height:2px;background:var(--blu);display:inline-block;border-radius:1px"></span>Energy</span>
+            <span style="display:flex;align-items:center;gap:3px"><span style="width:12px;height:2px;background:var(--red);display:inline-block;border-radius:1px"></span>Pain</span>
+          </div>
+        </div>
+        <div style="position:relative;height:162px"><canvas id="trendChart"></canvas></div>
+      </div>
+      <div class="cc">
+        <div class="ch"><div class="ct"><i class="ti ti-chart-radar" style="color:var(--pur)"></i>Weekly Health Stats</div></div>
+        <div class="wstat-grid" id="wstatGrid"></div>
+      </div>
+    </div>
+    <div class="bot-grid a4">
+      <div class="cc">
+        <div class="ch"><div class="ct"><i class="ti ti-grid-dots" style="color:var(--grn)"></i>Habit Heatmap (30 Days)</div><span style="font-size:8.5px;color:var(--t3)">Jun 2026</span></div>
+        <div class="hm-dates"><span>May 7</span><span>May 21</span><span>Jun 6</span></div>
+        <div class="hm-grid" id="hmGrid"></div>
+        <div class="hm-leg"><span>Less</span><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:rgba(255,255,255,.06)"></div><div style="width:9px;height:9px;border-radius:2px;background:rgba(0,212,160,.2)"></div><div style="width:9px;height:9px;border-radius:2px;background:rgba(0,212,160,.45)"></div><div style="width:9px;height:9px;border-radius:2px;background:rgba(0,212,160,.72)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--grn)"></div></div><span>More</span></div>
+      </div>
+      <div class="cc">
+        <div class="ch"><div class="ct"><i class="ti ti-brain" style="color:var(--pur)"></i>Top AI Insights</div><span class="ca">View all →</span></div>
+        <div class="ins-item"><div class="ins-ico" style="background:rgba(0,212,160,.14)">🧘</div><div><div class="ins-txt">Pain decreases by 18% on days after stretching.</div><div class="ins-conf" style="color:var(--grn)">Confidence: 82%<div class="cbar"><div class="cfill" style="width:82%;background:var(--grn)"></div></div></div></div></div>
+        <div class="ins-item"><div class="ins-ico" style="background:rgba(239,68,68,.13)">😴</div><div><div class="ins-txt">Poor sleep is linked to 67% of flare-ups.</div><div class="ins-conf" style="color:var(--amb)">Confidence: 74%<div class="cbar"><div class="cfill" style="width:74%;background:var(--amb)"></div></div></div></div></div>
+        <div class="ins-item"><div class="ins-ico" style="background:rgba(79,142,247,.13)">📅</div><div><div class="ins-txt">Wednesday is your most productive day.</div><div class="ins-conf" style="color:var(--blu)">Confidence: 81%<div class="cbar"><div class="cfill" style="width:81%;background:var(--blu)"></div></div></div></div></div>
+      </div>
+      <div class="cc">
+        <div class="ch"><div class="ct"><i class="ti ti-alert-circle" style="color:var(--amb)"></i>Triggers Summary (30 Days)</div></div>
+        <div class="trig-row" style="margin-bottom:9px">
+          <div style="position:relative;flex-shrink:0"><canvas id="trigChart" width="92" height="92"></canvas><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center"><div style="font-size:14px;font-weight:700;line-height:1.1">50</div><div style="font-size:8px;color:var(--t2)">Events</div></div></div>
+          <div class="trig-leg">
+            <div class="trig-item"><span class="trig-dot" style="background:#ef4444"></span>Poor Sleep<span class="trig-pct" style="color:#ef4444">40%</span></div>
+            <div class="trig-item"><span class="trig-dot" style="background:#f59e0b"></span>Stress<span class="trig-pct" style="color:#f59e0b">22%</span></div>
+            <div class="trig-item"><span class="trig-dot" style="background:#4f8ef7"></span>Long Sitting<span class="trig-pct" style="color:#4f8ef7">18%</span></div>
+            <div class="trig-item"><span class="trig-dot" style="background:#a78bfa"></span>Weather<span class="trig-pct" style="color:#a78bfa">10%</span></div>
+            <div class="trig-item"><span class="trig-dot" style="background:rgba(255,255,255,.18)"></span>Other<span class="trig-pct">10%</span></div>
+          </div>
+        </div>
+        <div style="text-align:right"><span class="ca">View full trigger analysis →</span></div>
+      </div>
+    </div>
+    <div class="goals-hdr a5"><div class="ct" style="font-size:12px"><i class="ti ti-target" style="color:var(--blu)"></i>Goal Progress Overview</div><span class="ca">View all →</span></div>
+    <div class="goals-row a5" id="goalsRow"></div>
   </div>
-  <div id="dashContent"><div class="loading"><div class="spinner"></div> Loading…</div></div>
-</div>
 
-<!-- DAILY REFLECTION -->
-<div id="page-reflection" class="page">
-  <div class="ph"><div><h1>Daily reflection</h1><p>Log today's health, habits and thoughts</p></div><span class="today-badge" id="reflectionDate"></span></div>
-  <div class="card"><div class="card-title"><i class="ti ti-mood-smile"></i> Mood · Energy</div>
-    <div class="field" style="margin-bottom:14px"><label>Mood (1–10)</label><div class="slider-wrap"><input type="range" id="f-mood" min="1" max="10" value="5" oninput="sv('sv-mood',this.value)"><span class="slider-val" id="sv-mood">5</span></div></div>
-    <div class="field"><label>Energy (1–10)</label><div class="slider-wrap"><input type="range" id="f-energy" min="1" max="10" value="5" oninput="sv('sv-energy',this.value)"><span class="slider-val" id="sv-energy">5</span></div></div>
+  <!-- ── DAILY REFLECTION ── -->
+  <div id="page-reflection" class="page">
+    <div class="page-hdr"><h1>Daily Reflection</h1><p>Log today's health, symptoms and thoughts</p></div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-mood-smile" style="color:var(--grn)"></i>Mood · Energy · Productivity · Stress</div>
+      <div class="form-row">
+        <div class="field"><label>Mood (1–10)</label><div class="slider-wrap"><input type="range" id="f-mood" min="1" max="10" value="5" oninput="sv('sv-mood',this.value)"><span class="slider-val" id="sv-mood">5</span></div></div>
+        <div class="field"><label>Energy (1–10)</label><div class="slider-wrap"><input type="range" id="f-energy" min="1" max="10" value="5" oninput="sv('sv-energy',this.value)"><span class="slider-val" id="sv-energy">5</span></div></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Productivity (1–10)</label><div class="slider-wrap"><input type="range" id="f-prod" min="1" max="10" value="5" oninput="sv('sv-prod',this.value)"><span class="slider-val" id="sv-prod">5</span></div></div>
+        <div class="field"><label>Stress (1–10)</label><div class="slider-wrap"><input type="range" id="f-stress" min="1" max="10" value="3" oninput="sv('sv-stress',this.value)"><span class="slider-val" id="sv-stress">3</span></div></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-activity" style="color:var(--amb)"></i>Arthritis &amp; Pain</div>
+      <div class="form-row" style="margin-bottom:14px">
+        <div class="field"><label>Overall pain (0–10)</label><div class="slider-wrap"><input type="range" id="f-pain" min="0" max="10" value="0" oninput="sv('sv-pain',this.value);updateSev(this.value)"><span class="slider-val" id="sv-pain">0</span></div></div>
+        <div class="field"><label>Pain severity</label><div class="toggle-row" id="sevTog"><button class="tog" onclick="setSev('Mild',this)">Mild</button><button class="tog" onclick="setSev('Moderate',this)">Moderate</button><button class="tog" onclick="setSev('Severe',this)">Severe</button></div></div>
+      </div>
+      <div class="form-row" style="margin-bottom:14px">
+        <div class="field"><label>Morning stiffness (0–10)</label><div class="slider-wrap"><input type="range" id="f-stiff" min="0" max="10" value="0" oninput="sv('sv-stiff',this.value)"><span class="slider-val" id="sv-stiff">0</span></div></div>
+        <div class="field"><label>Fatigue (0–10)</label><div class="slider-wrap"><input type="range" id="f-fatigue" min="0" max="10" value="0" oninput="sv('sv-fatigue',this.value)"><span class="slider-val" id="sv-fatigue">0</span></div></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Pain duration (hours)</label><input type="number" id="f-dur" min="0" max="24" step="0.5" value="0"></div>
+        <div class="field"><label>Flare-up today?</label><div class="toggle-row" id="flareTog"><button class="tog" onclick="setTog('flareTog','Yes',this,'ayes')">Yes</button><button class="tog ano" onclick="setTog('flareTog','No',this,'ano')">No</button></div></div>
+      </div>
+      <div style="height:0.5px;background:rgba(255,255,255,.07);margin:14px 0"></div>
+      <div class="form-title" style="margin-bottom:10px"><i class="ti ti-body-scan" style="color:var(--pur)"></i>Joint-specific pain (0–10)</div>
+      <div class="form-row-3">
+        <div class="field"><label>Shoulder</label><div class="slider-wrap"><input type="range" id="f-shoulder" min="0" max="10" value="0" oninput="sv('sv-sh',this.value)"><span class="slider-val" id="sv-sh">0</span></div></div>
+        <div class="field"><label>Neck</label><div class="slider-wrap"><input type="range" id="f-neck" min="0" max="10" value="0" oninput="sv('sv-nk',this.value)"><span class="slider-val" id="sv-nk">0</span></div></div>
+        <div class="field"><label>Back</label><div class="slider-wrap"><input type="range" id="f-back" min="0" max="10" value="0" oninput="sv('sv-bk',this.value)"><span class="slider-val" id="sv-bk">0</span></div></div>
+      </div>
+      <div class="form-row" style="max-width:400px">
+        <div class="field"><label>Hip</label><div class="slider-wrap"><input type="range" id="f-hip" min="0" max="10" value="0" oninput="sv('sv-hp',this.value)"><span class="slider-val" id="sv-hp">0</span></div></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-pill" style="color:var(--pur)"></i>Medication Log</div>
+      <div id="medRows"></div>
+      <button class="btn btn-sm" onclick="addMed()"><i class="ti ti-plus"></i>Add medication</button>
+    </div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-moon" style="color:var(--pur)"></i>Sleep Tracking</div>
+      <div class="form-row">
+        <div class="field"><label>Hours slept</label><div class="slider-wrap"><input type="range" id="f-slh" min="0" max="12" step="0.5" value="7" oninput="sv('sv-slh',this.value)"><span class="slider-val" id="sv-slh">7</span></div></div>
+        <div class="field"><label>Sleep quality (1–10)</label><div class="slider-wrap"><input type="range" id="f-slq" min="1" max="10" value="7" oninput="sv('sv-slq',this.value)"><span class="slider-val" id="sv-slq">7</span></div></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Bedtime</label><input type="time" id="f-bed" value="22:00"></div>
+        <div class="field"><label>Wake time</label><input type="time" id="f-wake" value="06:00"></div>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-notes" style="color:var(--cyn)"></i>Daily Journal</div>
+      <div class="field"><label>Notes — thoughts, observations, anything on your mind</label><textarea id="f-notes" placeholder="How was your day? Any patterns you noticed…"></textarea></div>
+    </div>
+    <div class="save-bar"><span class="save-status" id="refSaveStatus">Fill in your data and save.</span><button class="btn btn-primary" onclick="saveReflection()"><i class="ti ti-device-floppy"></i>Save today's entry</button></div>
   </div>
-  <div class="card"><div class="card-title"><i class="ti ti-activity"></i> Arthritis symptom tracking</div>
-    <div class="form-row" style="margin-bottom:14px">
-      <div class="field"><label>Overall pain (0–10)</label><div class="slider-wrap"><input type="range" id="f-pain" min="0" max="10" value="0" oninput="sv('sv-pain',this.value);updatePainSeverity(this.value)"><span class="slider-val" id="sv-pain">0</span></div></div>
-      <div class="field"><label>Pain severity</label><div class="toggle-row" id="severityToggle"><button class="toggle-btn" onclick="setSeverity('Mild',this)">Mild</button><button class="toggle-btn" onclick="setSeverity('Moderate',this)">Moderate</button><button class="toggle-btn" onclick="setSeverity('Severe',this)">Severe</button></div></div>
-    </div>
-    <div class="form-row" style="margin-bottom:14px">
-      <div class="field"><label>Morning stiffness (0–10)</label><div class="slider-wrap"><input type="range" id="f-stiffness" min="0" max="10" value="0" oninput="sv('sv-stiffness',this.value)"><span class="slider-val" id="sv-stiffness">0</span></div></div>
-      <div class="field"><label>Fatigue (0–10)</label><div class="slider-wrap"><input type="range" id="f-fatigue" min="0" max="10" value="0" oninput="sv('sv-fatigue',this.value)"><span class="slider-val" id="sv-fatigue">0</span></div></div>
-    </div>
-    <div class="form-row">
-      <div class="field"><label>Pain duration (hours)</label><input type="number" id="f-duration" min="0" max="24" step="0.5" value="0"></div>
-      <div class="field"><label>Flare-up today?</label><div class="toggle-row" id="flareToggle"><button class="toggle-btn" onclick="setToggle('flareToggle','Yes',this,'active-yes')">Yes</button><button class="toggle-btn active-no" onclick="setToggle('flareToggle','No',this,'active-no')">No</button></div></div>
-    </div>
-    <div class="section-divider"></div>
-    <div class="card-title" style="margin-bottom:10px"><i class="ti ti-body-scan"></i> Joint-specific pain (0–10)</div>
-    <div class="form-row-4">
-      <div class="field"><label>Shoulder</label><div class="slider-wrap"><input type="range" id="f-shoulder" min="0" max="10" value="0" oninput="sv('sv-shoulder',this.value)"><span class="slider-val" id="sv-shoulder">0</span></div></div>
-      <div class="field"><label>Neck</label><div class="slider-wrap"><input type="range" id="f-neck" min="0" max="10" value="0" oninput="sv('sv-neck',this.value)"><span class="slider-val" id="sv-neck">0</span></div></div>
-      <div class="field"><label>Back</label><div class="slider-wrap"><input type="range" id="f-back" min="0" max="10" value="0" oninput="sv('sv-back',this.value)"><span class="slider-val" id="sv-back">0</span></div></div>
-      <div class="field"><label>Hip</label><div class="slider-wrap"><input type="range" id="f-hip" min="0" max="10" value="0" oninput="sv('sv-hip',this.value)"><span class="slider-val" id="sv-hip">0</span></div></div>
-    </div>
-  </div>
-  <div class="card"><div class="card-title"><i class="ti ti-pill"></i> Medication log</div><div id="medRows"></div><button class="btn btn-sm" onclick="addMedRow()"><i class="ti ti-plus"></i> Add medication</button></div>
-  <div class="card"><div class="card-title"><i class="ti ti-moon"></i> Sleep tracking</div>
-    <div class="form-row">
-      <div class="field"><label>Hours slept</label><div class="slider-wrap"><input type="range" id="f-sleep-hrs" min="0" max="12" step="0.5" value="7" oninput="sv('sv-sleep-hrs',this.value)"><span class="slider-val" id="sv-sleep-hrs">7</span></div></div>
-      <div class="field"><label>Sleep quality (1–10)</label><div class="slider-wrap"><input type="range" id="f-sleep-q" min="1" max="10" value="7" oninput="sv('sv-sleep-q',this.value)"><span class="slider-val" id="sv-sleep-q">7</span></div></div>
-    </div>
-    <div class="form-row">
-      <div class="field"><label>Bedtime</label><input type="time" id="f-bedtime" value="22:00"></div>
-      <div class="field"><label>Wake time</label><input type="time" id="f-wake" value="06:00"></div>
-    </div>
-  </div>
-  <div class="card"><div class="card-title"><i class="ti ti-notes"></i> Daily journal</div><div class="field"><label>Notes</label><textarea id="f-notes" placeholder="How was your day? Any thoughts on health, energy, or habits…"></textarea></div></div>
-  <div class="save-bar"><span class="save-status" id="saveStatus">Fill in today's data and save.</span><button class="btn btn-primary" onclick="saveReflection()"><i class="ti ti-device-floppy"></i> Save today's entry</button></div>
-</div>
 
-<!-- HABITS -->
-<div id="page-habits" class="page">
-  <div class="ph"><div><h1>Habit tracker</h1><p id="habitDateLabel"></p></div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="badge badge-b" id="habitCompBadge">—</span><button class="btn" onclick="loadHabits()"><i class="ti ti-refresh"></i> Refresh</button></div>
-  </div>
-  <div class="g4" id="habitSummaryRow"></div>
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-      <div class="card-title" style="margin-bottom:0"><i class="ti ti-calendar-check"></i> Today's check-in</div>
-      <button class="btn btn-sm btn-primary" onclick="saveHabits()"><i class="ti ti-device-floppy"></i> Save habits</button>
+  <!-- ── HABITS ── -->
+  <div id="page-habits" class="page">
+    <div class="page-hdr"><h1>Habit Tracker</h1><p id="habitDateLbl"></p></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px" id="habitSummary"></div>
+    <div class="form-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="form-title" style="margin-bottom:0"><i class="ti ti-calendar-check" style="color:var(--grn)"></i>Today's Check-in</div>
+        <button class="btn btn-primary btn-sm" onclick="saveHabits()"><i class="ti ti-device-floppy"></i>Save habits</button>
+      </div>
+      <div id="habitChecklist"><div class="ldg" style="grid-column:unset"><div class="sp-anim"></div>Loading…</div></div>
+      <div class="prog-bar"><div class="prog-fill" id="habitProg" style="width:0%"></div></div>
+      <div style="font-size:10px;color:var(--t2);margin-top:5px" id="habitProgLbl">0 of 0 done</div>
     </div>
-    <div id="habitChecklist"><div class="loading"><div class="spinner"></div> Loading habits…</div></div>
-    <div class="progress-bar-wrap"><div class="progress-bar" id="habitProgressBar" style="width:0%"></div></div>
-    <div style="font-size:11px;color:var(--text2);margin-top:5px" id="habitProgressLabel">0 of 0 done today</div>
-  </div>
-  <div class="card"><div class="card-title"><i class="ti ti-grid-dots"></i> 7-day consistency grid</div><div id="habitConsistencyGrid"></div></div>
-  <div class="g2">
-    <div class="card"><div class="card-title"><i class="ti ti-flame"></i> Current streaks</div><div id="habitStreaks"></div></div>
-    <div class="card"><div class="card-title"><i class="ti ti-trophy"></i> Longest streaks</div><div id="habitLongest"></div></div>
-  </div>
-  <div class="card"><div class="card-title"><i class="ti ti-adjustments"></i> Manage habits</div>
-    <div id="habitManageList"></div>
-    <div class="add-habit-form" id="addHabitForm" style="display:none">
-      <input id="newHabitName" placeholder="Habit name">
-      <select id="newHabitCat"><option value="Health">Health</option><option value="Academic">Academic</option><option value="Personal">Personal</option><option value="Fitness">Fitness</option></select>
-      <button class="btn btn-primary btn-sm" onclick="submitNewHabit()"><i class="ti ti-check"></i> Add</button>
-      <button class="btn btn-sm" onclick="document.getElementById('addHabitForm').style.display='none'">Cancel</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <div class="form-card"><div class="form-title"><i class="ti ti-flame" style="color:var(--amb)"></i>Current Streaks</div><div id="curStreaks"></div></div>
+      <div class="form-card"><div class="form-title"><i class="ti ti-trophy" style="color:var(--blu)"></i>Longest Streaks</div><div id="lonStreaks"></div></div>
     </div>
-    <button class="btn btn-sm" style="margin-top:10px" onclick="document.getElementById('addHabitForm').style.display='flex'"><i class="ti ti-plus"></i> Add new habit</button>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-adjustments" style="color:var(--pur)"></i>Manage Habits</div>
+      <div id="habitManage"></div>
+      <div id="addHabitForm" style="display:none;margin-top:10px;display:none">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding:10px;background:rgba(255,255,255,.035);border-radius:var(--rs);align-items:center">
+          <input id="newHabitName" placeholder="Habit name" style="flex:1;min-width:120px;padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);font-size:12px;font-family:inherit;background:rgba(255,255,255,.05);color:var(--t);outline:none">
+          <select id="newHabitCat" style="padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);font-size:12px;font-family:inherit;background:rgba(255,255,255,.05);color:var(--t);outline:none"><option value="Health">Health</option><option value="Academic">Academic</option><option value="Personal">Personal</option><option value="Fitness">Fitness</option></select>
+          <button class="btn btn-primary btn-sm" onclick="submitHabit()"><i class="ti ti-check"></i>Add</button>
+          <button class="btn btn-sm" onclick="document.getElementById('addHabitForm').style.display='none'">Cancel</button>
+        </div>
+      </div>
+      <button class="btn btn-sm" style="margin-top:10px" onclick="document.getElementById('addHabitForm').style.display='flex'"><i class="ti ti-plus"></i>Add new habit</button>
+    </div>
   </div>
-</div>
 
-<!-- GOALS -->
-<div id="page-goals" class="page">
-  <div class="ph"><div><h1>Goals & milestones</h1><p>Track your goals, milestones and tasks</p></div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <button class="btn" onclick="loadGoals()"><i class="ti ti-refresh"></i> Refresh</button>
-      <button class="btn btn-primary btn-sm" onclick="toggleGoalForm(true)"><i class="ti ti-plus"></i> New goal</button>
+  <!-- ── GOALS ── -->
+  <div id="page-goals" class="page">
+    <div class="page-hdr" style="display:flex;align-items:center;justify-content:space-between">
+      <div><h1>Goals &amp; Milestones</h1><p>Track goals, milestones and tasks</p></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="loadGoalsPage()"><i class="ti ti-refresh"></i>Refresh</button>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('newGoalForm').style.display='block'"><i class="ti ti-plus"></i>New goal</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px" id="goalSummary"></div>
+    <div id="newGoalForm" style="display:none;margin-bottom:10px">
+      <div class="form-card">
+        <div class="form-title"><i class="ti ti-target" style="color:var(--grn)"></i>New Goal</div>
+        <div class="form-row"><div class="field"><label>Goal name</label><input id="gf-name" placeholder="e.g. Complete BMB coursework"></div><div class="field"><label>Category</label><select id="gf-cat"><option>Academic</option><option>Health</option><option>Fitness</option><option>Personal Development</option></select></div></div>
+        <div class="field" style="margin-bottom:12px"><label>Description</label><textarea id="gf-desc" placeholder="What do you want to achieve?" style="min-height:55px"></textarea></div>
+        <div class="form-row"><div class="field"><label>Start date</label><input type="date" id="gf-start"></div><div class="field"><label>Target date</label><input type="date" id="gf-target"></div></div>
+        <div class="form-row"><div class="field"><label>Duration type</label><select id="gf-dur"><option>Monthly</option><option>Weekly</option></select></div><div class="field"><label>Initial progress %</label><input type="number" id="gf-prog" min="0" max="100" value="0"></div></div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn btn-primary btn-sm" onclick="submitGoal()"><i class="ti ti-check"></i>Save goal</button>
+          <button class="btn btn-sm" onclick="document.getElementById('newGoalForm').style.display='none'">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="goalsList"><div class="ldg" style="grid-column:unset"><div class="sp-anim"></div>Loading goals…</div></div>
+  </div>
+
+  <!-- ── ACADEMIC ── -->
+  <div id="page-academic" class="page">
+    <div class="page-hdr"><h1>Academic Progress</h1><p>Track study hours, subjects and research goals</p></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px">
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px">Today's Study</div><div style="font-size:22px;font-weight:700;color:var(--grn)">2.5<span style="font-size:12px;color:var(--t2)">h</span></div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px">Weekly Hours</div><div style="font-size:22px;font-weight:700;color:var(--blu)">14<span style="font-size:12px;color:var(--t2)">h</span></div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px">Study Streak</div><div style="font-size:22px;font-weight:700;color:var(--amb)">7<span style="font-size:12px;color:var(--t2)">d</span></div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px">Papers Read</div><div style="font-size:22px;font-weight:700;color:var(--pur)">12</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+      <div class="form-card">
+        <div class="form-title"><i class="ti ti-clock" style="color:var(--blu)"></i>Log Study Session</div>
+        <div class="form-row"><div class="field"><label>Subject</label><select><option>Biochemistry</option><option>Molecular Biology</option><option>Bioinformatics</option><option>Statistics</option><option>Programming</option><option>Research Reading</option></select></div><div class="field"><label>Hours</label><input type="number" min="0" max="12" step="0.5" value="1" placeholder="e.g. 2.5"></div></div>
+        <div class="field" style="margin-bottom:12px"><label>Notes</label><textarea placeholder="What did you study?" style="min-height:55px"></textarea></div>
+        <button class="btn btn-primary btn-sm"><i class="ti ti-check"></i>Log session</button>
+      </div>
+      <div class="form-card">
+        <div class="form-title"><i class="ti ti-chart-bar" style="color:var(--grn)"></i>Subject Distribution (This Week)</div>
+        <div style="position:relative;height:160px"><canvas id="academicChart"></canvas></div>
+      </div>
     </div>
   </div>
-  <div class="g4" id="goalSummaryRow"></div>
-  <div class="card" id="goalFormCard" style="display:none">
-    <div class="card-title"><i class="ti ti-target"></i> New goal</div>
-    <div class="form-row"><div class="field"><label>Goal name</label><input id="gf-name" placeholder="e.g. Complete BMB coursework"></div><div class="field"><label>Category</label><select id="gf-cat"><option>Academic</option><option>Health</option><option>Fitness</option><option>Personal Development</option></select></div></div>
-    <div class="field" style="margin-bottom:12px"><label>Description</label><textarea id="gf-desc" placeholder="What do you want to achieve?" style="min-height:60px"></textarea></div>
-    <div class="form-row"><div class="field"><label>Start date</label><input type="date" id="gf-start"></div><div class="field"><label>Target date</label><input type="date" id="gf-target"></div></div>
-    <div class="form-row"><div class="field"><label>Duration type</label><select id="gf-duration"><option>Monthly</option><option>Weekly</option></select></div><div class="field"><label>Initial progress %</label><input type="number" id="gf-progress" min="0" max="100" value="0"></div></div>
-    <div style="display:flex;gap:8px;margin-top:4px">
-      <button class="btn btn-primary btn-sm" onclick="submitGoal()"><i class="ti ti-check"></i> Save goal</button>
-      <button class="btn btn-sm" onclick="toggleGoalForm(false)">Cancel</button>
+
+  <!-- ── ARTHRITIS ── -->
+  <div id="page-arthritis" class="page">
+    <div class="page-hdr"><h1>Arthritis Intelligence</h1><p>Deep symptom analysis, body map and trigger tracking</p></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <div class="form-card">
+        <div class="form-title"><i class="ti ti-body-scan" style="color:var(--pur)"></i>Body Pain Map</div>
+        <div style="display:flex;justify-content:center;gap:20px">
+          <div style="text-align:center">
+            <div style="font-size:10px;color:var(--t2);margin-bottom:8px">Front</div>
+            <svg width="120" height="160" viewBox="0 0 120 160" fill="none">
+              <defs><filter id="gr2"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
+              <ellipse cx="60" cy="15" rx="10" ry="11" fill="rgba(79,142,247,.12)" stroke="rgba(79,142,247,.35)" stroke-width=".8"/>
+              <rect x="53" y="24" width="14" height="7" rx="2" fill="rgba(79,142,247,.1)" stroke="rgba(79,142,247,.28)" stroke-width=".7"/>
+              <path d="M40 30 Q60 24 80 30 L82 72 Q60 76 38 72 Z" fill="rgba(79,142,247,.1)" stroke="rgba(79,142,247,.28)" stroke-width=".8"/>
+              <path d="M18 32 Q29 28 40 32 L41 67 Q30 71 19 66 Z" fill="rgba(79,142,247,.08)" stroke="rgba(79,142,247,.2)" stroke-width=".7"/>
+              <path d="M80 32 Q91 28 102 32 L101 66 Q90 71 79 67 Z" fill="rgba(79,142,247,.08)" stroke="rgba(79,142,247,.2)" stroke-width=".7"/>
+              <path d="M42 72 Q60 76 78 72 L80 92 Q60 96 40 92 Z" fill="rgba(79,142,247,.09)" stroke="rgba(79,142,247,.22)" stroke-width=".7"/>
+              <rect x="41" y="91" width="17" height="55" rx="5" fill="rgba(79,142,247,.08)" stroke="rgba(79,142,247,.18)" stroke-width=".7"/>
+              <rect x="62" y="91" width="17" height="55" rx="5" fill="rgba(79,142,247,.08)" stroke="rgba(79,142,247,.18)" stroke-width=".7"/>
+              <circle cx="60" cy="27" r="9" fill="rgba(245,158,11,.18)" filter="url(#gr2)"/>
+              <circle cx="60" cy="27" r="5.5" fill="rgba(245,158,11,.42)" stroke="rgba(245,158,11,.88)" stroke-width="1.2"><animate attributeName="r" values="4.5;6.5;4.5" dur="2.3s" repeatCount="indefinite"/></circle>
+              <circle cx="23" cy="35" r="9" fill="rgba(239,68,68,.2)" filter="url(#gr2)"/>
+              <circle cx="23" cy="35" r="6" fill="rgba(239,68,68,.42)" stroke="rgba(239,68,68,.88)" stroke-width="1.2"><animate attributeName="r" values="5;7;5" dur="2.7s" repeatCount="indefinite"/></circle>
+              <circle cx="60" cy="60" r="7" fill="rgba(245,158,11,.16)" filter="url(#gr2)"/>
+              <circle cx="60" cy="60" r="5" fill="rgba(245,158,11,.38)" stroke="rgba(245,158,11,.82)" stroke-width="1.2"><animate attributeName="r" values="4;6;4" dur="3.1s" repeatCount="indefinite"/></circle>
+              <circle cx="49" cy="87" r="7" fill="rgba(239,68,68,.18)" filter="url(#gr2)"/>
+              <circle cx="49" cy="87" r="4.5" fill="rgba(239,68,68,.38)" stroke="rgba(239,68,68,.8)" stroke-width="1.2"><animate attributeName="r" values="3.5;5.5;3.5" dur="2.5s" repeatCount="indefinite"/></circle>
+              <text x="68" y="24" fill="rgba(245,158,11,.9)" font-size="6.5" font-family="system-ui">Neck 6/10</text>
+              <text x="0" y="33" fill="rgba(239,68,68,.9)" font-size="6" font-family="system-ui">Shoulder 7/10</text>
+              <text x="65" y="58" fill="rgba(245,158,11,.88)" font-size="6" font-family="system-ui">Back 6/10</text>
+              <text x="0" y="87" fill="rgba(239,68,68,.88)" font-size="6" font-family="system-ui">Hip 5/10</text>
+            </svg>
+          </div>
+          <div style="flex:1">
+            <div class="form-title" style="margin-bottom:10px"><i class="ti ti-chart-bar" style="color:var(--amb)"></i>Pain by Joint</div>
+            <div id="artJoints"></div>
+          </div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-title"><i class="ti ti-alert-circle" style="color:var(--amb)"></i>Trigger Analysis (30 Days)</div>
+        <div class="trig-row" style="margin-bottom:12px">
+          <div style="position:relative;flex-shrink:0"><canvas id="artTrigChart" width="110" height="110"></canvas><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center"><div style="font-size:16px;font-weight:700">50</div><div style="font-size:9px;color:var(--t2)">Total</div></div></div>
+          <div class="trig-leg">
+            <div class="trig-item"><span class="trig-dot" style="background:#ef4444"></span>Poor Sleep<span class="trig-pct" style="color:#ef4444">40%</span></div>
+            <div class="trig-item"><span class="trig-dot" style="background:#f59e0b"></span>Stress<span class="trig-pct" style="color:#f59e0b">22%</span></div>
+            <div class="trig-item"><span class="trig-dot" style="background:#4f8ef7"></span>Long Sitting<span class="trig-pct" style="color:#4f8ef7">18%</span></div>
+            <div class="trig-item"><span class="trig-dot" style="background:#a78bfa"></span>Weather<span class="trig-pct" style="color:#a78bfa">10%</span></div>
+            <div class="trig-item"><span class="trig-dot" style="background:rgba(255,255,255,.2)"></span>Other<span class="trig-pct">10%</span></div>
+          </div>
+        </div>
+        <div class="form-title" style="margin-bottom:8px"><i class="ti ti-tag"></i>Log Today's Trigger</div>
+        <div class="toggle-row" id="trigTog" style="flex-wrap:wrap;gap:6px">
+          <button class="tog">Poor Sleep</button><button class="tog">Stress</button><button class="tog">Long Sitting</button><button class="tog">Travel</button><button class="tog">Heavy Activity</button><button class="tog">Missed Med</button><button class="tog">Weather</button><button class="tog">Unknown</button>
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px"><i class="ti ti-check"></i>Save trigger</button>
+      </div>
+    </div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-chart-line" style="color:var(--red)"></i>Pain Trend (30 Days)</div>
+      <div style="position:relative;height:140px"><canvas id="artPainChart"></canvas></div>
     </div>
   </div>
-  <div id="goalsList"><div class="loading"><div class="spinner"></div> Loading goals…</div></div>
-</div>
 
-<!-- PATTERNS -->
-<div id="page-patterns" class="page">
-  <div class="ph"><div><h1>Pattern analysis</h1><p>Auto-detected trends and correlations from your data</p></div>
-    <div style="display:flex;gap:8px"><select id="patternRange" class="settings-input" onchange="loadPatterns()"><option value="30">Last 30 days</option><option value="90">All time</option></select><button class="btn" onclick="loadPatterns()"><i class="ti ti-refresh"></i> Refresh</button></div>
-  </div>
-  <div id="patternContent"><div class="loading"><div class="spinner"></div> Analysing your data…</div></div>
-</div>
-
-<!-- REPORTS -->
-<div id="page-reports" class="page">
-  <div class="ph"><div><h1>Reports</h1><p>Generate summaries for yourself or your doctor</p></div></div>
-  <div class="card"><div class="card-title"><i class="ti ti-calendar-search"></i> Select date range</div>
-    <div class="form-row">
-      <div class="field"><label>From</label><input type="date" id="rep-from"></div>
-      <div class="field"><label>To</label><input type="date" id="rep-to"></div>
+  <!-- ── PATTERNS ── -->
+  <div id="page-patterns" class="page">
+    <div class="page-hdr" style="display:flex;align-items:center;justify-content:space-between">
+      <div><h1>Pattern Analysis</h1><p>AI-powered correlations and trend discovery</p></div>
+      <select id="patRange" style="padding:6px 10px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);font-size:11px;background:rgba(255,255,255,.05);color:var(--t);outline:none;font-family:inherit" onchange="loadPatterns()"><option value="30">Last 30 days</option><option value="90">All time</option></select>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="generateReport()"><i class="ti ti-file-analytics"></i> Generate report</button>
-      <button class="btn btn-sm" onclick="printReport()"><i class="ti ti-printer"></i> Print / Save PDF</button>
+    <div id="patContent"><div class="ldg" style="grid-column:unset"><div class="sp-anim"></div>Analysing…</div></div>
+  </div>
+
+  <!-- ── REPORTS ── -->
+  <div id="page-reports" class="page">
+    <div class="page-hdr"><h1>Reports</h1><p>Generate summaries for yourself or your doctor</p></div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-calendar-search" style="color:var(--blu)"></i>Select Date Range</div>
+      <div class="form-row">
+        <div class="field"><label>From</label><input type="date" id="rep-from"></div>
+        <div class="field"><label>To</label><input type="date" id="rep-to"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="generateReport()"><i class="ti ti-file-analytics"></i>Generate report</button>
+        <button class="btn btn-sm" onclick="window.print()"><i class="ti ti-printer"></i>Print / PDF</button>
+      </div>
     </div>
+    <div id="reportContent"></div>
   </div>
-  <div id="reportContent"></div>
-</div>
 
-<!-- SETTINGS -->
-<div id="page-settings" class="page">
-  <div class="ph"><div><h1>Settings</h1><p>Configure your tracker preferences</p></div></div>
-  <div class="card"><div class="card-title"><i class="ti ti-user"></i> Personal</div>
-    <div class="settings-row"><div><div class="settings-label">Your name</div><div class="settings-desc">Shown on reports</div></div><input class="settings-input" id="s-name" placeholder="Your name"></div>
-    <div class="settings-row"><div><div class="settings-label">Timezone</div><div class="settings-desc">Used for date calculations</div></div><input class="settings-input" id="s-tz" value="Asia/Dhaka"></div>
-    <div class="settings-row"><div><div class="settings-label">Week starts on</div></div><select class="settings-input" id="s-week"><option value="Monday">Monday</option><option value="Sunday">Sunday</option></select></div>
+  <!-- ── SETTINGS ── -->
+  <div id="page-settings" class="page">
+    <div class="page-hdr"><h1>Settings</h1><p>Configure your tracker preferences</p></div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-user" style="color:var(--blu)"></i>Personal</div>
+      <div class="setting-row"><div><div class="setting-lbl">Your name</div><div class="setting-desc">Shown on reports and greetings</div></div><input class="setting-input" id="s-name" placeholder="Your name" value="Sujoy"></div>
+      <div class="setting-row"><div><div class="setting-lbl">Timezone</div><div class="setting-desc">Used for date calculations</div></div><input class="setting-input" id="s-tz" value="Asia/Dhaka"></div>
+      <div class="setting-row"><div><div class="setting-lbl">Week starts on</div></div><select class="setting-input" id="s-week"><option>Monday</option><option>Sunday</option></select></div>
+    </div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-activity" style="color:var(--amb)"></i>Flare-Up Detection</div>
+      <div class="setting-row"><div><div class="setting-lbl">Pain threshold</div><div class="setting-desc">Score that triggers flare-up flag</div></div><input type="number" class="setting-input" id="s-fpain" min="1" max="10" value="7"></div>
+      <div class="setting-row"><div><div class="setting-lbl">Consecutive days</div><div class="setting-desc">Days at threshold to confirm flare</div></div><input type="number" class="setting-input" id="s-fdays" min="1" max="7" value="3"></div>
+      <div class="setting-row"><div><div class="setting-lbl">Pain baseline</div><div class="setting-desc">Your typical pain on good days</div></div><input type="number" class="setting-input" id="s-base" min="0" max="10" value="4"></div>
+    </div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-brand-claude" style="color:var(--pur)"></i>Claude API</div>
+      <div class="setting-row"><div><div class="setting-lbl">Claude API key</div><div class="setting-desc">Enables AI insights in Pattern Analysis</div></div><input class="setting-input" id="s-apikey" type="password" placeholder="sk-ant-…"></div>
+    </div>
+    <div class="form-card">
+      <div class="form-title"><i class="ti ti-database" style="color:var(--cyn)"></i>Data</div>
+      <div class="setting-row"><div><div class="setting-lbl">Google Sheet ID</div><div class="setting-desc">Your linked Sheet (read-only)</div></div><input class="setting-input" value="1jFpNq94o7xeqxHIBpvG5PgEkRpY9xyvnArzBrwNNS14" readonly style="font-size:10px;color:var(--t3);min-width:200px"></div>
+    </div>
+    <div style="padding:8px 0"><button class="btn btn-primary" onclick="saveSettings()"><i class="ti ti-device-floppy"></i>Save settings</button><span id="settStatus" style="margin-left:12px;font-size:11px;color:var(--t2)"></span></div>
   </div>
-  <div class="card"><div class="card-title"><i class="ti ti-activity"></i> Flare-up detection</div>
-    <div class="settings-row"><div><div class="settings-label">Pain threshold for flare</div><div class="settings-desc">Pain score that triggers flare-up flag</div></div><input class="settings-input" id="s-flare-pain" type="number" min="1" max="10" value="7"></div>
-    <div class="settings-row"><div><div class="settings-label">Consecutive days</div><div class="settings-desc">Days at threshold before flagged as flare</div></div><input class="settings-input" id="s-flare-days" type="number" min="1" max="7" value="3"></div>
-    <div class="settings-row"><div><div class="settings-label">Personal pain baseline</div><div class="settings-desc">Your typical pain level on good days</div></div><input class="settings-input" id="s-baseline" type="number" min="0" max="10" value="4"></div>
-  </div>
-  <div class="card"><div class="card-title"><i class="ti ti-brand-claude"></i> Claude API</div>
-    <div class="settings-row"><div><div class="settings-label">Claude API key</div><div class="settings-desc">Used for AI insight generation in Patterns tab</div></div><input class="settings-input" id="s-apikey" type="password" placeholder="sk-ant-…"></div>
-  </div>
-  <div class="card"><div class="card-title"><i class="ti ti-database"></i> Data</div>
-    <div class="settings-row"><div><div class="settings-label">Google Sheet ID</div><div class="settings-desc">Your linked Sheet</div></div><input class="settings-input" id="s-sheetid" value="1jFpNq94o7xeqxHIBpvG5PgEkRpY9xyvnArzBrwNNS14" readonly style="font-size:11px;color:var(--text3)"></div>
-  </div>
-  <div style="padding:8px 0"><button class="btn btn-primary" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save settings</button><span id="settingsSaveStatus" style="margin-left:12px;font-size:12px;color:var(--text2)"></span></div>
-</div>
 
+  </div><!-- main-inner -->
 </main>
+
+<!-- ══ RIGHT SIDEBAR ══ -->
+<aside class="rsb">
+  <div class="rs">
+    <div class="rs-hdr">Today at a Glance <span class="rs-act">View Calendar →</span></div>
+    <div class="ev-item"><div class="ev-time">7:00 AM</div><div class="ev-dot" style="background:var(--pur)"></div><div><div class="ev-title">Medication</div><div class="ev-sub">Calcium + Vit D</div></div></div>
+    <div class="ev-item"><div class="ev-time">9:00 AM</div><div class="ev-dot" style="background:var(--blu)"></div><div><div class="ev-title">Biochemistry Class</div><div class="ev-sub">Molecular Biology</div></div></div>
+    <div class="ev-item"><div class="ev-time">12:30 PM</div><div class="ev-dot" style="background:var(--amb)"></div><div><div class="ev-title">Lunch Break</div></div></div>
+    <div class="ev-item"><div class="ev-time">2:00 PM</div><div class="ev-dot" style="background:var(--grn)"></div><div><div class="ev-title">Library – Study</div><div class="ev-sub">Research Reading</div></div></div>
+    <div class="ev-item"><div class="ev-time">6:00 PM</div><div class="ev-dot" style="background:var(--cyn)"></div><div><div class="ev-title">Evening Walk</div><div class="ev-sub">30 min</div></div></div>
+  </div>
+  <div class="rs">
+    <div class="ai-rec">
+      <div class="ai-rec-hdr"><i class="ti ti-sparkles"></i>AI Recommendation</div>
+      <div class="ai-rec-txt" id="aiRecTxt">Your pain is slightly higher today. Consider stretching and hydration.</div>
+      <div class="ai-rec-link">View details <i class="ti ti-arrow-right" style="font-size:11px"></i></div>
+    </div>
+  </div>
+  <div class="rs">
+    <div class="rs-hdr">Predictions for Tomorrow</div>
+    <div class="pred-card">
+      <div class="pred-row"><div class="pred-lbl"><i class="ti ti-activity" style="color:var(--amb)"></i>Pain</div><div style="display:flex;align-items:center;gap:6px"><span class="pred-val" style="color:var(--amb)">4/10</span><span class="pred-badge" style="background:rgba(0,212,160,.14);color:var(--grn)">Low</span></div></div>
+      <div class="pred-row"><div class="pred-lbl"><i class="ti ti-bolt" style="color:var(--blu)"></i>Energy</div><div style="display:flex;align-items:center;gap:6px"><span class="pred-val" style="color:var(--blu)">7/10</span><span class="pred-badge" style="background:rgba(79,142,247,.14);color:var(--blu)">Good</span></div></div>
+      <div class="pred-row"><div class="pred-lbl"><i class="ti ti-shield" style="color:var(--red)"></i>Flare-Up Risk</div><div style="display:flex;align-items:center;gap:6px"><span class="pred-val" style="color:var(--grn)">Low</span><span class="pred-badge" style="background:rgba(0,212,160,.14);color:var(--grn)">20%</span></div></div>
+      <div class="conf-sect"><div class="conf-lbl">Confidence <strong>78%</strong></div><div class="conf-tr"><div class="conf-fill" style="width:78%"></div></div></div>
+    </div>
+  </div>
+  <div class="rs">
+    <div class="rs-hdr">Quick Actions</div>
+    <div class="qa-grid">
+      <div class="qa-btn" onclick="nav('reflection',null)"><i class="ti ti-plus"></i><span>Add Entry</span></div>
+      <div class="qa-btn" onclick="nav('habits',null)"><i class="ti ti-checklist"></i><span>Log Habit</span></div>
+      <div class="qa-btn" onclick="nav('goals',null)"><i class="ti ti-target"></i><span>Add Goal</span></div>
+      <div class="qa-btn"><i class="ti ti-notes"></i><span>Add Note</span></div>
+    </div>
+  </div>
+  <div class="rs">
+    <div class="rs-hdr">Medication Reminder <span style="font-size:9px;color:var(--t2);text-transform:none;letter-spacing:0;font-weight:400">8:00 PM</span></div>
+    <div class="med-card">
+      <div class="med-ico">💊</div>
+      <div><div class="med-name-s">Methotrexate</div><div class="med-dose-s">10 mg</div></div>
+      <button class="med-btn">Mark as taken ✓</button>
+    </div>
+  </div>
+  <div class="rs">
+    <div class="rs-hdr">Recent Timeline <span class="rs-act">View all →</span></div>
+    <div class="tl-item"><div class="tl-dot" style="background:var(--grn)"></div><div class="tl-body"><div class="tl-txt">Logged daily reflection</div><div class="tl-meta">Jun 6 · 8:45 PM</div></div></div>
+    <div class="tl-item"><div class="tl-dot" style="background:var(--blu)"></div><div class="tl-body"><div class="tl-txt">Completed 4 habits</div><div class="tl-meta">Jun 6 · 8:45 PM</div></div></div>
+    <div class="tl-item"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-body"><div class="tl-txt">Pain score was higher</div><div class="tl-meta">Jun 5 · 9:10 PM</div></div></div>
+    <div class="tl-item"><div class="tl-dot" style="background:var(--pur)"></div><div class="tl-body"><div class="tl-txt">Completed goal milestone</div><div class="tl-meta">7:30 PM</div></div></div>
+  </div>
+</aside>
+
+</div>
 <script>
 const API="https://script.google.com/macros/s/AKfycbxuns192itNsA4CPQ3FTcH5f_dundPpdZjt-biVrFHLVhsfbNAinVIOp8HU0SUihIo9kg/exec";
-const today=new Date();
-const todayStr=today.toISOString().split('T')[0];
+const now=new Date(),hr=now.getHours(),todayStr=now.toISOString().split('T')[0];
 
-// NAV
-document.querySelectorAll('.nav-tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-    document.getElementById('page-'+tab.dataset.page).classList.add('active');
-    tab.classList.add('active');
-    if(tab.dataset.page==='reflection')loadTodayReflection();
-    if(tab.dataset.page==='habits')loadHabits();
-    if(tab.dataset.page==='goals')loadGoals();
-    if(tab.dataset.page==='patterns')loadPatterns();
-    if(tab.dataset.page==='settings')loadSettings();
-    if(tab.dataset.page==='reports')initReport();
-  });
-});
-
-// DATE + GREETING
-const hr=today.getHours();
-const greeting=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
-document.getElementById('dashGreeting').textContent=greeting+' 👋';
-document.getElementById('dateStr').textContent=today.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-document.getElementById('reflectionDate').textContent=today.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
-document.getElementById('habitDateLabel').textContent=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
-const wk=Math.ceil((((today-new Date(today.getFullYear(),0,1))/86400000)+1)/7);
-document.getElementById('weekBadge').textContent='Week '+wk;
-
-async function apiGet(p){const u=API+'?'+new URLSearchParams(p);const r=await fetch(u);return r.json();}
-async function apiPost(b){
-  // Send all writes as GET with encoded data to bypass CORS
-  const action=b.action;
-  const data=b.data||b;
-  const u=API+'?action='+action+'&data='+encodeURIComponent(JSON.stringify(data));
-  const r=await fetch(u);
-  return r.json();
+/* ── NAV ── */
+function nav(p,btn){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else{document.querySelectorAll('.ni').forEach(x=>{if(x.getAttribute('onclick')&&x.getAttribute('onclick').includes("'"+p+"'"))x.classList.add('active');});}
+  if(p==='reflection')loadReflection();
+  if(p==='habits')loadHabitsPage();
+  if(p==='goals')loadGoalsPage();
+  if(p==='patterns')loadPatterns();
+  if(p==='settings')loadSettings();
+  if(p==='reports')initReport();
+  if(p==='arthritis')buildArtJoints();
 }
-function sv(id,val){document.getElementById(id).textContent=val;}
-function drawRing(canvas,pct,color,size){size=size||64;const ctx=canvas.getContext('2d');const cx=size/2,cy=size/2,r=size/2-6,lw=7,tau=Math.PI*2;ctx.clearRect(0,0,size,size);ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+tau);ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();if(pct>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+tau*(pct/100));ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();}}
-function setFlareBadge(s){const el=document.getElementById('flareBadge');if(s==='FLARE'){el.className='hero-badge danger';el.innerHTML='<i class="ti ti-alert-triangle"></i> Flare-up detected';}else if(s==='WARNING'){el.className='hero-badge warn';el.innerHTML='<i class="ti ti-alert-circle"></i> Pain spike warning';}else{el.className='hero-badge';el.innerHTML='<i class="ti ti-shield-check"></i> No flare-up';}}
 
-// REFLECTION
-let selectedSeverity='',flareValue='No',medCount=0;
-function setSeverity(val,btn){selectedSeverity=val;document.querySelectorAll('#severityToggle .toggle-btn').forEach(b=>b.className='toggle-btn');btn.className='toggle-btn active-'+val.toLowerCase();}
-function updatePainSeverity(val){const v=parseInt(val);if(v<=3)setSeverity('Mild',document.querySelectorAll('#severityToggle .toggle-btn')[0]);else if(v<=6)setSeverity('Moderate',document.querySelectorAll('#severityToggle .toggle-btn')[1]);else setSeverity('Severe',document.querySelectorAll('#severityToggle .toggle-btn')[2]);}
-function setToggle(gid,val,btn,cls){if(gid==='flareToggle')flareValue=val;document.querySelectorAll('#'+gid+' .toggle-btn').forEach(b=>b.className='toggle-btn');btn.className='toggle-btn '+cls;}
-function addMedRow(data){medCount++;const id='med-'+medCount;const div=document.createElement('div');div.className='med-row';div.id=id;div.innerHTML=`<input placeholder="Medication name" value="${data?.name||''}"><input placeholder="Dose" value="${data?.dose||''}"><input type="time" value="${data?.time||''}"><select style="padding:6px 8px;border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--surface)"><option value="No">Taken</option><option value="Yes" ${data?.missed==='Yes'?'selected':''}>Missed</option></select><button class="med-remove" onclick="document.getElementById('${id}').remove()"><i class="ti ti-x"></i></button>`;document.getElementById('medRows').appendChild(div);}
-async function loadTodayReflection(){
+/* ── DATE ── */
+document.getElementById('greeting').textContent=(hr<12?'Good morning':hr<17?'Good afternoon':'Good evening')+', Sujoy 👋';
+document.getElementById('dateStr').textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' · Week '+Math.ceil((((now-new Date(now.getFullYear(),0,1))/86400000)+1)/7);
+document.getElementById('habitDateLbl').textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+/* ── CALENDAR ── */
+(function(){
+  const d=now,y=d.getFullYear(),m=d.getMonth();
+  document.getElementById('calTitle').textContent=d.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+  ['M','T','W','T','F','S','S'].forEach(x=>{const e=document.createElement('div');e.className='mcal-dh';e.textContent=x;document.getElementById('calDays').appendChild(e);});
+  const first=(new Date(y,m,1).getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+  const g=document.getElementById('calCells');
+  for(let i=0;i<first;i++){const e=document.createElement('div');e.className='mcc em';g.appendChild(e);}
+  for(let i=1;i<=days;i++){const e=document.createElement('div');e.className='mcc'+(i===d.getDate()?' td':i%5===0||i%7===0?' ev':'');e.textContent=i;g.appendChild(e);}
+})();
+
+/* ── UTILS ── */
+function sv(id,val){document.getElementById(id).textContent=val;}
+async function apiGet(p){return(await fetch(API+'?'+new URLSearchParams(p))).json();}
+async function apiPost(b){const a=b.action,d=b.data||{};return(await fetch(API+'?action='+a+'&data='+encodeURIComponent(JSON.stringify(d)))).json();}
+
+/* ── SPARK ── */
+function spark(el,data,color,fill){
+  if(!el)return;
+  const ctx=el.getContext('2d'),w=el.width,h=el.height;
+  ctx.clearRect(0,0,w,h);
+  const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
+  const pts=data.map((v,i)=>({x:i*(w/(data.length-1)),y:h-((v-mn)/rng)*(h-5)-3}));
+  if(fill){ctx.beginPath();ctx.moveTo(pts[0].x,h);pts.forEach(p=>ctx.lineTo(p.x,p.y));ctx.lineTo(pts[pts.length-1].x,h);ctx.closePath();const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,color+'55');g.addColorStop(1,color+'00');ctx.fillStyle=g;ctx.fill();}
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=1.8;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();
+}
+
+/* ── GAUGE ── */
+function gauge(id,score){
+  const c=document.getElementById(id);if(!c)return;
+  const ctx=c.getContext('2d'),s=c.width,cx=s/2,cy=s/2,r=s/2-6,lw=8;
+  ctx.clearRect(0,0,s,s);
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI*.75,Math.PI*2.25);ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();
+  const g=ctx.createLinearGradient(0,0,s,s);g.addColorStop(0,'#00d4a0');g.addColorStop(.5,'#00bcee');g.addColorStop(1,'#4f8ef7');
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI*.75,Math.PI*.75+Math.PI*1.5*(Math.min(score,100)/100));ctx.strokeStyle=g;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();
+}
+
+/* ── RING ── */
+function ring(id,pct,color){
+  const c=document.getElementById(id);if(!c)return;
+  const ctx=c.getContext('2d'),s=c.width,cx=s/2,cy=s/2,r=s/2-4,lw=5;
+  ctx.clearRect(0,0,s,s);
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=lw;ctx.stroke();
+  if(pct>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*(pct/100));ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();}
+}
+
+/* ── HEATMAP ── */
+function buildHM(){
+  const habits=['Study','Exercise','Walking','Stretching','Water Intake','Reading'];
+  let html='';
+  habits.forEach(h=>{
+    html+=`<div class="hm-row"><div class="hm-lbl">${h}</div><div class="hm-cells">`;
+    for(let i=0;i<30;i++){const r=Math.random();const bg=r>.75?'var(--grn)':r>.55?'rgba(0,212,160,.68)':r>.35?'rgba(0,212,160,.38)':r>.12?'rgba(0,212,160,.17)':'rgba(255,255,255,.06)';html+=`<div class="hmc" style="background:${bg}" title="${h} Day ${i+1}"></div>`;}
+    html+=`</div></div>`;
+  });
+  document.getElementById('hmGrid').innerHTML=html;
+}
+
+/* ── TRIGGERS ── */
+function buildTrig(id,size){
+  size=size||92;
+  new Chart(document.getElementById(id),{type:'doughnut',data:{datasets:[{data:[40,22,18,10,10],backgroundColor:['#ef4444','#f59e0b','#4f8ef7','#a78bfa','rgba(255,255,255,.12)'],borderWidth:0,hoverOffset:4}]},options:{cutout:'70%',animation:{duration:800},plugins:{legend:{display:false}}}});
+}
+
+/* ── WEEKLY STATS ── */
+function buildWstat(d,hc){
+  const stats=[
+    {lbl:'Avg Pain',val:d?d.pain_overall:'4.2',unit:'/10',color:'var(--amb)',fill:d?+(d.pain_overall)*10:42},
+    {lbl:'Avg Energy',val:d?d.energy:'7.1',unit:'/10',color:'var(--blu)',fill:d?+(d.energy)*10:71},
+    {lbl:'Habits Done',val:hc.pct||76,unit:'%',color:'var(--grn)',fill:hc.pct||76},
+    {lbl:'Sleep Avg',val:d?d.sleep_hours:'7.5',unit:'h',color:'var(--pur)',fill:d?+(d.sleep_hours)/12*100:62},
+  ];
+  document.getElementById('wstatGrid').innerHTML=stats.map(s=>`
+    <div class="wstat">
+      <div class="wstat-lbl"><span style="color:${s.color}">●</span>${s.lbl}</div>
+      <div class="wstat-val" style="color:${s.color}">${s.val}<span style="font-size:11px;font-weight:400;color:var(--t2)">${s.unit}</span></div>
+      <div class="wstat-bar"><div class="wstat-fill" style="width:${s.fill}%;background:${s.color}"></div></div>
+    </div>`).join('');
+}
+
+/* ── GOALS DATA ── */
+const DEMO_GOALS=[
+  {goal_name:'Learn Bioinformatics',target_date:'Aug 31, 2026',manual_progress:60,task_progress:65,color:'#a78bfa'},
+  {goal_name:'Research Paper Reading',target_date:'Aug 15, 2026',manual_progress:40,task_progress:45,color:'#4f8ef7'},
+  {goal_name:'Improve Mobility',target_date:'Sep 30, 2026',manual_progress:70,task_progress:72,color:'#00d4a0'},
+  {goal_name:'Python Programming',target_date:'Jul 31, 2026',manual_progress:20,task_progress:30,color:'#f59e0b'},
+];
+
+function buildGoalsRow(list){
+  document.getElementById('goalsRow').innerHTML=list.map((g,i)=>{
+    const mp=g.manual_progress||0,tp=g.task_progress||0,col=g.color||'#00d4a0';
+    return `<div class="gc"><div class="gc-name">${g.goal_name}</div><div class="gc-target">Target: ${g.target_date||'—'}</div><div class="gc-body"><div class="gc-rw"><canvas id="dgr${i}" width="50" height="50"></canvas><div class="gc-rv" style="color:${col}">${mp}%</div></div><div class="gc-info"><div class="gc-pr"><span style="color:${col}">Manual ${mp}%</span></div><div class="gc-tr"><div class="gc-fm" style="width:${mp}%;background:${col}"></div></div><div class="gc-pr"><span style="color:var(--blu)">Tasks ${tp}%</span></div><div class="gc-tr"><div class="gc-ft" style="width:${tp}%"></div></div></div></div><span class="gc-badge ${tp<35?'risk':'on'}">${tp<35?'⚠ At Risk':'✓ On Track'}</span></div>`;
+  }).join('');
+  list.forEach((_,i)=>ring('dgr'+i,list[i].manual_progress||0,list[i].color||'#00d4a0'));
+}
+
+/* ── HEALTH SCORE ── */
+function calcHS(d,hpct){
+  if(!d)return 84;
+  const m=+(d.mood||5),e=+(d.energy||5),p=10-+(d.pain_overall||5),sl=Math.min(+(d.sleep_hours||6)/8*10,10),h=(hpct||0)/10;
+  return Math.round((m*20+e*20+p*25+sl*20+h*15)/100*10);
+}
+
+function renderHero(d,hc,history){
+  const hs=calcHS(d,hc.pct),hsClass=hs>=80?'Excellent':hs>=65?'Good':hs>=50?'Fair':'Low';
+  const rec=d?Math.round(hs-calcHS(null,0)+5):15;
+  const sb=[5,6,5,6,7,6];
+  const fm=d?[...sb,+d.mood]:[7,8,7,8,8,7,7];
+  const fe=d?[...sb.map(x=>x+1),+d.energy]:[6,7,8,7,8,8,8];
+  const fp=d?[6,5,6,5,6,5,+d.pain_overall]:[5,6,5,6,5,6,6];
+  const fsl=d?[6,7,7,8,7,7,+d.sleep_hours]:[7,8,9,8,9,8,11];
+  document.getElementById('hsRow').innerHTML=`
+    <div class="hsc pls"><div class="gauge-w"><canvas id="gCvs" width="100" height="100"></canvas><div class="gauge-c"><div class="gauge-n">${hs}</div><div class="gauge-d">/100</div></div></div><div class="hsc-info"><h4>Health Score 💚</h4><div class="hsc-cls">${hsClass}</div><div class="hsc-tr">${rec>=0?'↑ Improving':'↓ Declining'} vs last 7 days</div></div></div>
+    <div class="rec"><div class="rec-lbl"><i class="ti ti-trending-up" style="color:var(--blu)"></i>Recovery Score</div><div class="rec-val">+${Math.abs(rec)}</div><div class="rec-sub">Improving<br>vs last 7 days</div><canvas id="recSp" width="92" height="20" style="margin-top:8px"></canvas></div>
+    <div class="mc mood"><div class="mc-lbl"><i class="ti ti-mood-smile" style="color:var(--grn)"></i>Mood</div><div class="mc-val" style="color:var(--grn)">${d?d.mood:7}<span style="font-size:10px;font-weight:400;color:var(--t2)">/10</span></div><div class="mc-sub">${d&&+d.mood>=7?'Feeling great':'Moderate'}</div><div class="mc-tr up">↑ 1 from yesterday</div><canvas id="mSp" width="100" height="18"></canvas></div>
+    <div class="mc energy"><div class="mc-lbl"><i class="ti ti-bolt" style="color:var(--blu)"></i>Energy</div><div class="mc-val" style="color:var(--blu)">${d?d.energy:8}<span style="font-size:10px;font-weight:400;color:var(--t2)">/10</span></div><div class="mc-sub">${d&&+d.energy>=7?'High energy':'Moderate'}</div><div class="mc-tr up">↑ 2 from yesterday</div><canvas id="eSp" width="100" height="18"></canvas></div>
+    <div class="mc pain"><div class="mc-lbl"><i class="ti ti-activity" style="color:var(--amb)"></i>Pain</div><div class="mc-val" style="color:var(--amb)">${d?d.pain_overall:6}<span style="font-size:10px;font-weight:400;color:var(--t2)">/10</span></div><div class="mc-sub">${d?d.pain_severity||'Moderate':'Moderate'}</div><div class="mc-tr dn">↓ 1 from yesterday</div><canvas id="pSp" width="100" height="18"></canvas></div>
+    <div class="mc sleep"><div class="mc-lbl"><i class="ti ti-moon" style="color:var(--pur)"></i>Sleep</div><div class="mc-val" style="color:var(--pur)">${d?d.sleep_hours:11}<span style="font-size:10px;font-weight:400;color:var(--t2)">h</span></div><div class="mc-sub">Quality ${d?d.sleep_quality:8}/10</div><div class="mc-tr up">↑ 1h vs yesterday</div><canvas id="slSp" width="100" height="18"></canvas></div>`;
+  gauge('gCvs',hs);
+  spark(document.getElementById('recSp'),[48,52,55,58,60,62,hs],'#4f8ef7',true);
+  spark(document.getElementById('mSp'),fm,'#00d4a0',true);
+  spark(document.getElementById('eSp'),fe,'#4f8ef7',true);
+  spark(document.getElementById('pSp'),fp,'#ef4444',false);
+  spark(document.getElementById('slSp'),fsl,'#a78bfa',true);
+  // Summary
+  document.getElementById('sumRow').innerHTML=`
+    <div class="sc"><div class="sc-ico" style="background:rgba(0,212,160,.12)"><i class="ti ti-checklist" style="color:var(--grn)"></i></div><div><div class="sc-val" style="color:var(--grn)">${hc.pct||76}%</div><div class="sc-lbl">Habit Completion</div><div class="sc-badge" style="background:rgba(0,212,160,.12);color:var(--grn)">+12% vs yesterday</div></div></div>
+    <div class="sc"><div class="sc-ico" style="background:rgba(79,142,247,.12)"><i class="ti ti-bolt" style="color:var(--blu)"></i></div><div><div class="sc-val" style="color:var(--blu)">${d?d.energy:7}/10</div><div class="sc-lbl">Productivity</div><div class="sc-badge" style="background:rgba(79,142,247,.12);color:var(--blu)">Good day!</div></div></div>
+    <div class="sc"><div class="sc-ico" style="background:rgba(167,139,250,.12)"><i class="ti ti-target" style="color:var(--pur)"></i></div><div><div class="sc-val" style="color:var(--pur)">62%</div><div class="sc-lbl">Goal Progress</div><div class="sc-badge" style="background:rgba(167,139,250,.12);color:var(--pur)">On Track</div></div></div>
+    <div class="sc"><div class="sc-ico" style="background:rgba(0,212,160,.12)"><i class="ti ti-shield-check" style="color:var(--grn)"></i></div><div><div class="sc-val" style="color:var(--grn)">Low</div><div class="sc-lbl">Flare-up Risk</div><div class="sc-badge" style="background:rgba(0,212,160,.12);color:var(--grn)">No immediate risk</div></div></div>
+    <div class="sc"><div class="sc-ico" style="background:rgba(245,158,11,.12)"><i class="ti ti-brain" style="color:var(--amb)"></i></div><div><div class="sc-val" style="color:var(--amb)">3</div><div class="sc-lbl">AI Insights</div><div class="sc-badge" style="background:rgba(245,158,11,.12);color:var(--amb)">New insights</div></div></div>`;
+  // Trend chart
+  const tL=history.length>1?history.map(r=>{const dt=new Date(String(r.date).substring(0,10));return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});})
+    :['May 31','Jun 1','Jun 2','Jun 3','Jun 4','Jun 5','Jun 6'];
+  const tM=history.length>1?history.map(r=>+r.mood||0):fm;
+  const tE=history.length>1?history.map(r=>+r.energy||0):fe;
+  const tP=history.length>1?history.map(r=>+r.pain_overall||0):fp;
+  if(window._tc){window._tc.destroy();}
+  window._tc=new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:tL,datasets:[
+    {label:'Mood',data:tM,borderColor:'#00d4a0',backgroundColor:'rgba(0,212,160,.09)',borderWidth:2,pointRadius:3.5,pointBackgroundColor:'#00d4a0',tension:.4,fill:true},
+    {label:'Energy',data:tE,borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.07)',borderWidth:2,pointRadius:3.5,pointBackgroundColor:'#4f8ef7',tension:.4,fill:true},
+    {label:'Pain',data:tP,borderColor:'#ef4444',backgroundColor:'transparent',borderWidth:2,pointRadius:3.5,pointBackgroundColor:'#ef4444',tension:.4,borderDash:[4,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:700},plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(8,12,24,.95)',titleColor:'#dde8ff',bodyColor:'#7a8db5',borderColor:'rgba(255,255,255,.09)',borderWidth:1,padding:9,cornerRadius:8}},
+  scales:{y:{min:0,max:10,ticks:{stepSize:2,font:{size:9},color:'rgba(120,140,180,.45)'},grid:{color:'rgba(255,255,255,.04)'}},x:{ticks:{font:{size:9},color:'rgba(120,140,180,.45)'},grid:{display:false}}}}});
+  buildWstat(d,hc);
+}
+
+/* ── LOAD ALL ── */
+async function loadAll(){
+  spark(document.getElementById('qSp'),[5,6,7,6,8,7,8,8],'#00d4a0',true);
+  buildHM();buildTrig('trigChart');buildGoalsRow(DEMO_GOALS);renderHero(null,{pct:76},[]);
   try{
-    const d=await apiGet({action:'getDailyLog',date:todayStr});
+    const data=await apiGet({action:'getDashboard'});
+    const d=data.daily,hc=data.habit_completion||{done:0,total:0,pct:0};
+    const streaks=data.streaks||[],history=data.history_7d||[],goals=data.goals||[];
+    const bs=streaks[0]||null;
+    if(bs){document.getElementById('strkN').textContent=bs.current_streak;document.getElementById('strkS').textContent=bs.habit_name+' 🔥';}
+    const aiOpts=['Pain is at '+(d?.pain_overall||'—')+'/10. Consider stretching and hydration.','Energy is '+(+(d?.energy||5)>=7?'high — great day for deep study!':'moderate. Take regular breaks.'),'Sleep was '+(d?.sleep_hours||'—')+'h. '+(+(d?.sleep_hours||0)>=7?'Well rested 💪':'Try to sleep earlier tonight.')];
+    document.getElementById('aiRecTxt').textContent=aiOpts[Math.floor(Math.random()*aiOpts.length)];
+    renderHero(d,hc,history);
+    if(goals.length>0)buildGoalsRow(goals.slice(0,4).map((g,i)=>({...g,color:DEMO_GOALS[i]?.color||'#00d4a0'})));
+  }catch(e){console.warn('Demo mode:',e.message);}
+}
+
+/* ── REFLECTION FORM ── */
+let selSev='',flareVal='No',medCnt=0;
+function setSev(v,btn){selSev=v;document.querySelectorAll('#sevTog .tog').forEach(b=>b.className='tog');btn.className='tog a'+v.toLowerCase().substring(0,3);}
+function updateSev(v){const n=+v;if(n<=3)setSev('Mild',document.querySelectorAll('#sevTog .tog')[0]);else if(n<=6)setSev('Moderate',document.querySelectorAll('#sevTog .tog')[1]);else setSev('Severe',document.querySelectorAll('#sevTog .tog')[2]);}
+function setTog(gid,val,btn,cls){if(gid==='flareTog')flareVal=val;document.querySelectorAll('#'+gid+' .tog').forEach(b=>b.className='tog');btn.className='tog '+cls;}
+function addMed(data){medCnt++;const id='m'+medCnt;const d=document.createElement('div');d.className='med-row';d.id=id;d.innerHTML=`<input placeholder="Medication name" value="${data?.name||''}"><input placeholder="Dose" value="${data?.dose||''}"><input type="time" value="${data?.time||''}"><select style="padding:5px 8px;border:1px solid rgba(255,255,255,.1);border-radius:6px;font-size:11px;background:rgba(255,255,255,.05);color:var(--t);outline:none"><option value="No">Taken</option><option value="Yes">Missed</option></select><button class="med-rm" onclick="document.getElementById('${id}').remove()"><i class="ti ti-x"></i></button>`;document.getElementById('medRows').appendChild(d);}
+async function loadReflection(){
+  try{const d=await apiGet({action:'getDailyLog',date:todayStr});
     if(d&&d.mood){
       ['mood','energy'].forEach(k=>{document.getElementById('f-'+k).value=d[k];sv('sv-'+k,d[k]);});
+      document.getElementById('f-prod').value=5;document.getElementById('f-stress').value=3;
       document.getElementById('f-pain').value=d.pain_overall;sv('sv-pain',d.pain_overall);
-      document.getElementById('f-stiffness').value=d.morning_stiffness;sv('sv-stiffness',d.morning_stiffness);
+      document.getElementById('f-stiff').value=d.morning_stiffness;sv('sv-stiff',d.morning_stiffness);
       document.getElementById('f-fatigue').value=d.fatigue;sv('sv-fatigue',d.fatigue);
-      document.getElementById('f-duration').value=d.pain_duration_hrs;
-      ['shoulder','neck','back','hip'].forEach(j=>{document.getElementById('f-'+j).value=d['pain_'+j];sv('sv-'+j,d['pain_'+j]);});
-      document.getElementById('f-sleep-hrs').value=d.sleep_hours;sv('sv-sleep-hrs',d.sleep_hours);
-      document.getElementById('f-sleep-q').value=d.sleep_quality;sv('sv-sleep-q',d.sleep_quality);
-      document.getElementById('f-bedtime').value=d.bedtime||'22:00';
+      document.getElementById('f-dur').value=d.pain_duration_hrs;
+      ['shoulder','neck','back','hip'].forEach((j,i)=>{const ids=['f-shoulder','f-neck','f-back','f-hip'],svids=['sv-sh','sv-nk','sv-bk','sv-hp'];document.getElementById(ids[i]).value=d['pain_'+j];sv(svids[i],d['pain_'+j]);});
+      document.getElementById('f-slh').value=d.sleep_hours;sv('sv-slh',d.sleep_hours);
+      document.getElementById('f-slq').value=d.sleep_quality;sv('sv-slq',d.sleep_quality);
+      document.getElementById('f-bed').value=d.bedtime||'22:00';
       document.getElementById('f-wake').value=d.wake_time||'06:00';
       document.getElementById('f-notes').value=d.notes||'';
-      updatePainSeverity(d.pain_overall);
-      if(d.flare_up==='Yes')setToggle('flareToggle','Yes',document.querySelectorAll('#flareToggle .toggle-btn')[0],'active-yes');
-      document.getElementById('saveStatus').textContent='Entry already saved — you can update it.';
+      updateSev(d.pain_overall);
+      document.getElementById('refSaveStatus').textContent='Entry saved today — you can update it.';
     }
-    const meds=await apiGet({action:'getMedicationLog',date:todayStr});
-    if(Array.isArray(meds))meds.forEach(m=>addMedRow({name:m.medication_name,dose:m.dose,time:m.time_taken,missed:m.missed}));
   }catch(e){}
 }
 async function saveReflection(){
-  const st=document.getElementById('saveStatus');st.textContent='Saving…';
+  const st=document.getElementById('refSaveStatus');st.textContent='Saving…';
   try{
-    const res=await apiPost({action:'saveDailyLog',data:{date:todayStr,mood:document.getElementById('f-mood').value,energy:document.getElementById('f-energy').value,pain_overall:document.getElementById('f-pain').value,pain_severity:selectedSeverity||'Mild',pain_shoulder:document.getElementById('f-shoulder').value,pain_neck:document.getElementById('f-neck').value,pain_back:document.getElementById('f-back').value,pain_hip:document.getElementById('f-hip').value,morning_stiffness:document.getElementById('f-stiffness').value,fatigue:document.getElementById('f-fatigue').value,pain_duration_hrs:document.getElementById('f-duration').value,flare_up:flareValue,sleep_hours:document.getElementById('f-sleep-hrs').value,sleep_quality:document.getElementById('f-sleep-q').value,bedtime:document.getElementById('f-bedtime').value,wake_time:document.getElementById('f-wake').value,notes:document.getElementById('f-notes').value}});
-    if(res.success){st.textContent='✓ Saved at '+new Date().toLocaleTimeString();for(const row of document.querySelectorAll('.med-row')){const inp=row.querySelectorAll('input');const sel=row.querySelector('select');if(inp[0].value.trim())await apiPost({action:'saveMedication',data:{date:todayStr,medication_name:inp[0].value,dose:inp[1].value,time_taken:inp[2].value,missed:sel.value}});}}
-    else st.textContent='Error: '+(res.error||'Unknown');
-  }catch(e){st.textContent='Could not save: '+e.message;}
+    const res=await apiPost({action:'saveDailyLog',data:{date:todayStr,mood:document.getElementById('f-mood').value,energy:document.getElementById('f-energy').value,pain_overall:document.getElementById('f-pain').value,pain_severity:selSev||'Mild',pain_shoulder:document.getElementById('f-shoulder').value,pain_neck:document.getElementById('f-neck').value,pain_back:document.getElementById('f-back').value,pain_hip:document.getElementById('f-hip').value,morning_stiffness:document.getElementById('f-stiff').value,fatigue:document.getElementById('f-fatigue').value,pain_duration_hrs:document.getElementById('f-dur').value,flare_up:flareVal,sleep_hours:document.getElementById('f-slh').value,sleep_quality:document.getElementById('f-slq').value,bedtime:document.getElementById('f-bed').value,wake_time:document.getElementById('f-wake').value,notes:document.getElementById('f-notes').value}});
+    if(res.success){st.textContent='✓ Saved at '+new Date().toLocaleTimeString();st.style.color='var(--grn)';for(const row of document.querySelectorAll('.med-row')){const inp=row.querySelectorAll('input');const sel=row.querySelector('select');if(inp[0].value.trim())await apiPost({action:'saveMedication',data:{date:todayStr,medication_name:inp[0].value,dose:inp[1].value,time_taken:inp[2].value,missed:sel.value}});}}
+    else{st.textContent='Error: '+(res.error||'Unknown');st.style.color='var(--red)';}
+  }catch(e){st.textContent='Could not save: '+e.message;st.style.color='var(--red)';}
 }
 
-// HABITS
-let habitsData=[],habitLogToday={};
-async function loadHabits(){
-  document.getElementById('habitChecklist').innerHTML='<div class="loading"><div class="spinner"></div> Loading…</div>';
+/* ── HABITS PAGE ── */
+let habitsData=[],habitStatus={};
+async function loadHabitsPage(){
+  document.getElementById('habitChecklist').innerHTML='<div class="ldg" style="grid-column:unset"><div class="sp-anim"></div>Loading…</div>';
   try{
-    const [habits,dashboard]=await Promise.all([apiGet({action:'getHabitsMaster'}),apiGet({action:'getDashboard'})]);
+    const [habits,dash]=await Promise.all([apiGet({action:'getHabitsMaster'}),apiGet({action:'getDashboard'})]);
     habitsData=Array.isArray(habits)?habits:[];
-    const streaks=dashboard.streaks||[];const hc=dashboard.habit_completion||{done:0,total:0,pct:0};const habitLog=dashboard.habit_log||[];
-    habitLogToday={};habitLog.forEach(h=>{habitLogToday[h.habit_id]=h.status;});
-    document.getElementById('habitCompBadge').textContent=hc.pct+'% today';
-    const bs=streaks.length?streaks[0]:{habit_name:'—',current_streak:0};
-    document.getElementById('habitSummaryRow').innerHTML=`<div class="metric-card"><div class="metric-label"><i class="ti ti-checklist" style="font-size:12px"></i>Done today</div><div class="metric-value">${hc.done}<span style="font-size:13px;color:var(--text2)">/${hc.total}</span></div><div class="metric-sub">${hc.pct}% completion</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-flame" style="font-size:12px"></i>Best streak</div><div class="metric-value" style="color:var(--amber-text)">${bs.current_streak}<span style="font-size:13px;color:var(--text2)">d</span></div><div class="metric-sub">${bs.habit_name}</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-list-check" style="font-size:12px"></i>Active habits</div><div class="metric-value">${habitsData.length}<span style="font-size:13px;color:var(--text2)">/20</span></div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-calendar-week" style="font-size:12px"></i>7-day logged</div><div class="metric-value">${habitLog.length}<span style="font-size:13px;color:var(--text2)"> entries</span></div></div>`;
+    const hc=dash.habit_completion||{done:0,total:0,pct:0};
+    const streaks=dash.streaks||[],hl=dash.habit_log||[];
+    habitStatus={};hl.forEach(h=>{habitStatus[h.habit_id]=h.status;});
+    const bs=streaks[0]||null;
+    document.getElementById('habitSummary').innerHTML=`
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px;display:flex;align-items:center;gap:3px"><i class="ti ti-checklist" style="font-size:12px;color:var(--grn)"></i>Done today</div><div style="font-size:22px;font-weight:700;color:var(--grn)">${hc.done}<span style="font-size:12px;color:var(--t2)">/${hc.total}</span></div><div style="font-size:9.5px;color:var(--t2)">${hc.pct}% completion</div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px;display:flex;align-items:center;gap:3px"><i class="ti ti-flame" style="font-size:12px;color:var(--amb)"></i>Best streak</div><div style="font-size:22px;font-weight:700;color:var(--amb)">${bs?bs.current_streak:0}<span style="font-size:12px;color:var(--t2)">d</span></div><div style="font-size:9.5px;color:var(--t2)">${bs?bs.habit_name:'—'}</div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px;display:flex;align-items:center;gap:3px"><i class="ti ti-list-check" style="font-size:12px;color:var(--blu)"></i>Active habits</div><div style="font-size:22px;font-weight:700;color:var(--blu)">${habitsData.length}<span style="font-size:12px;color:var(--t2)">/20</span></div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px;display:flex;align-items:center;gap:3px"><i class="ti ti-calendar-week" style="font-size:12px;color:var(--pur)"></i>7-day logged</div><div style="font-size:22px;font-weight:700;color:var(--pur)">${hl.length}<span style="font-size:12px;color:var(--t2)"> entries</span></div></div>`;
     renderChecklist();
-    // consistency grid
-    renderConsistencyGrid(habitLog, habitsData);
-    // streaks
     let sH='',lH='';
-    if(streaks.length){streaks.slice(0,6).forEach(s=>{const c=s.current_streak>=7?'var(--amber-text)':s.current_streak>=3?'var(--green-text)':'var(--text2)';sH+=`<div class="streak-item"><span class="streak-name">${s.habit_name}</span><span class="streak-ct" style="color:${c}"><i class="ti ti-flame" style="font-size:14px"></i>${s.current_streak}d</span></div>`;lH+=`<div class="streak-item"><span class="streak-name">${s.habit_name}</span><span class="streak-ct" style="color:var(--blue-text)"><i class="ti ti-trophy" style="font-size:14px"></i>${s.longest_streak}d</span></div>`;});}
-    else{sH=lH='<p style="font-size:12px;color:var(--text2);padding:8px 0">No streaks yet.</p>';}
-    document.getElementById('habitStreaks').innerHTML=sH;document.getElementById('habitLongest').innerHTML=lH;
-    renderManageList();
-  }catch(e){document.getElementById('habitChecklist').innerHTML=`<div class="empty-state"><i class="ti ti-wifi-off"></i><h3>Could not connect</h3><p style="font-size:12px;color:var(--text2)">${e.message}</p><button class="btn" onclick="loadHabits()"><i class="ti ti-refresh"></i> Try again</button></div>`;}
+    if(streaks.length){streaks.slice(0,5).forEach(s=>{const c=s.current_streak>=7?'var(--amb)':s.current_streak>=3?'var(--grn)':'var(--t2)';sH+=`<div class="habit-row"><div><div class="habit-lbl">${s.habit_name}</div></div><span style="font-weight:700;color:${c};display:flex;align-items:center;gap:4px"><i class="ti ti-flame" style="font-size:14px"></i>${s.current_streak}d</span></div>`;lH+=`<div class="habit-row"><div><div class="habit-lbl">${s.habit_name}</div></div><span style="font-weight:700;color:var(--blu);display:flex;align-items:center;gap:4px"><i class="ti ti-trophy" style="font-size:14px"></i>${s.longest_streak}d</span></div>`;});}
+    else{sH=lH='<p style="font-size:11px;color:var(--t2);padding:8px 0">No streaks yet. Start logging!</p>';}
+    document.getElementById('curStreaks').innerHTML=sH;
+    document.getElementById('lonStreaks').innerHTML=lH;
+    document.getElementById('habitManage').innerHTML=habitsData.map(h=>`<div class="habit-row"><div><div class="habit-lbl">${h.habit_name}</div><div class="habit-cat">${h.category}</div></div><button style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px" onclick="archiveHabit('${h.habit_id}','${h.habit_name}')" title="Archive"><i class="ti ti-archive"></i></button></div>`).join('');
+  }catch(e){document.getElementById('habitChecklist').innerHTML=`<p style="color:var(--red);font-size:12px;padding:12px">${e.message}</p>`;}
 }
 function renderChecklist(){
   const el=document.getElementById('habitChecklist');
-  if(!habitsData.length){el.innerHTML='<p style="font-size:13px;color:var(--text2)">No active habits. Add one below.</p>';updateProgress();return;}
-  el.innerHTML=habitsData.map(h=>{const isDone=habitLogToday[h.habit_id]==='Done';const isMiss=habitLogToday[h.habit_id]==='Not Done';return `<div class="habit-check-row"><div class="habit-check-left"><div><div class="habit-check-name">${h.habit_name}</div><div class="habit-check-cat">${h.category}</div></div></div><div class="habit-check-right"><button class="check-btn ${isDone?'done':''}" onclick="toggleHabit('${h.habit_id}','Done')">✓</button><button class="check-btn ${isMiss?'miss':''}" onclick="toggleHabit('${h.habit_id}','Not Done')">✗</button></div></div>`;}).join('');
-  updateProgress();
+  if(!habitsData.length){el.innerHTML='<p style="font-size:12px;color:var(--t2);padding:8px 0">No active habits. Add one below.</p>';updateProg();return;}
+  el.innerHTML=habitsData.map(h=>{const done=habitStatus[h.habit_id]==='Done',miss=habitStatus[h.habit_id]==='Not Done';return `<div class="habit-row"><div><div class="habit-lbl">${h.habit_name}</div><div class="habit-cat">${h.category}</div></div><div class="hck-btns"><button class="hck ${done?'done':''}" onclick="togHabit('${h.habit_id}','Done')">✓</button><button class="hck ${miss?'miss':''}" onclick="togHabit('${h.habit_id}','Not Done')">✗</button></div></div>`;}).join('');
+  updateProg();
 }
-function toggleHabit(id,status){habitLogToday[id]=habitLogToday[id]===status?'':status;renderChecklist();}
-function updateProgress(){const total=habitsData.length;const done=Object.values(habitLogToday).filter(v=>v==='Done').length;const pct=total>0?Math.round((done/total)*100):0;document.getElementById('habitProgressBar').style.width=pct+'%';document.getElementById('habitProgressLabel').textContent=done+' of '+total+' done today ('+pct+'%)';document.getElementById('habitCompBadge').textContent=pct+'% today';}
-function renderManageList(){const el=document.getElementById('habitManageList');if(!habitsData.length){el.innerHTML='<p style="font-size:12px;color:var(--text2);margin-bottom:8px">No active habits.</p>';return;}el.innerHTML=habitsData.map(h=>`<div class="habit-check-row"><div class="habit-check-left"><div><div class="habit-check-name">${h.habit_name}</div><div class="habit-check-cat">${h.category}</div></div></div><div class="habit-actions"><button class="icon-btn" title="Archive" onclick="archiveHabit('${h.habit_id}','${h.habit_name}')"><i class="ti ti-archive"></i></button></div></div>`).join('');}
-async function saveHabits(){const habits=habitsData.map(h=>({habit_id:h.habit_id,habit_name:h.habit_name,status:habitLogToday[h.habit_id]||'Not Done'}));if(!habits.length){alert('No habits to save.');return;}try{const res=await apiPost({action:'saveHabitLog',data:{date:todayStr,habits}});if(res.success){const l=document.getElementById('habitProgressLabel');l.textContent+=' — ✓ Saved at '+new Date().toLocaleTimeString();l.style.color='var(--green-text)';}}catch(e){alert('Could not save: '+e.message);}}
-async function submitNewHabit(){
-  const name=document.getElementById('newHabitName').value.trim();
-  const cat=document.getElementById('newHabitCat').value;
-  if(!name){alert('Please enter a habit name.');return;}
-  const btn=document.querySelector('#addHabitForm .btn-primary');
-  btn.textContent='Adding…';btn.disabled=true;
-  try{
-    const res=await apiPost({action:'addHabit',data:{habit_name:name,category:cat,sort_order:habitsData.length+1}});
-    if(res.success){
-      document.getElementById('newHabitName').value='';
-      document.getElementById('addHabitForm').style.display='none';
-      // Wait a moment for Sheet to update then reload
-      setTimeout(()=>loadHabits(),1000);
-    } else {
-      alert('Error: '+(res.error||'Unknown'));
-    }
-  }catch(e){alert('Could not add: '+e.message);}
-  finally{btn.innerHTML='<i class="ti ti-check"></i> Add';btn.disabled=false;}
+function togHabit(id,s){habitStatus[id]=habitStatus[id]===s?'':s;renderChecklist();}
+function updateProg(){const t=habitsData.length,d=Object.values(habitStatus).filter(v=>v==='Done').length,p=t?Math.round(d/t*100):0;document.getElementById('habitProg').style.width=p+'%';document.getElementById('habitProgLbl').textContent=d+' of '+t+' done today ('+p+'%)';}
+async function saveHabits(){
+  const habits=habitsData.map(h=>({habit_id:h.habit_id,habit_name:h.habit_name,status:habitStatus[h.habit_id]||'Not Done'}));
+  if(!habits.length){alert('No habits to save.');return;}
+  try{const res=await apiPost({action:'saveHabitLog',data:{date:todayStr,habits}});if(res.success){const l=document.getElementById('habitProgLbl');l.textContent+=' ✓ Saved';l.style.color='var(--grn)';}}catch(e){alert('Error: '+e.message);}
 }
-async function archiveHabit(id,name){if(!confirm('Archive "'+name+'"?'))return;try{const res=await apiPost({action:'archiveHabit',data:{habit_id:id}});if(res.success)loadHabits();}catch(e){alert('Could not archive: '+e.message);}}
-
-function renderConsistencyGrid(habitLog, habits){
-  const el=document.getElementById('habitConsistencyGrid');
-  if(!habits.length){el.innerHTML='<p style="font-size:12px;color:var(--text2)">No habits yet.</p>';return;}
-  const today=new Date();
-  const dayLabels=Array.from({length:7},(_,i)=>{
-    const d=new Date(today);d.setDate(today.getDate()-(6-i));
-    return{short:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][d.getDay()===0?6:d.getDay()-1],full:d.toLocaleDateString('en-US',{month:'short',day:'numeric'})};
-  });
-  let totalDone=0,totalPossible=0;
-  const perfectDays=Array(7).fill(0);
-  let bestStreakHabit={name:'—',streak:0};
-
-  let html=`<div class="cg-legend">
-    <span style="display:flex;align-items:center;gap:4px"><span class="cg-legend-dot" style="background:#EAF3DE;border:1px solid #639922"></span>Done</span>
-    <span style="display:flex;align-items:center;gap:4px"><span class="cg-legend-dot" style="background:#FCEBEB;border:1px solid #E24B4A"></span>Missed</span>
-    <span style="display:flex;align-items:center;gap:4px"><span class="cg-legend-dot" style="background:var(--surface2)"></span>No data</span>
-  </div>
-  <table class="cg-table" role="grid" aria-label="7-day habit consistency grid">
-  <thead><tr>
-    <th style="text-align:left;font-size:11px;font-weight:500;color:var(--text2);padding-bottom:8px">Habit</th>`;
-  dayLabels.forEach(d=>html+=`<th class="cg-day-head">${d.short}</th>`);
-  html+=`<th style="width:55px"></th><th style="width:36px"></th></tr></thead><tbody>`;
-
-  habits.forEach(h=>{
-    const logs=habitLog.filter(l=>l.habit_id===h.habit_id);
-    const done=logs.filter(l=>l.status==='Done').length;
-    const pct=Math.round((done/7)*100);
-    const pctColor=pct>=80?'#639922':pct>=50?'#BA7517':'#E24B4A';
-    totalDone+=done;totalPossible+=7;
-    logs.forEach((l,i)=>{if(l.status==='Done')perfectDays[i]++;});
-    // streak
-    let cur=0,max=0;
-    logs.forEach(l=>{if(l.status==='Done'){cur++;if(cur>max)max=cur;}else cur=0;});
-    if(max>bestStreakHabit.streak)bestStreakHabit={name:h.habit_name,streak:max};
-
-    html+=`<tr><td class="cg-habit-label"><div>${h.habit_name}</div><div class="cg-cat">${h.category}</div></td>`;
-    for(let i=0;i<7;i++){
-      const log=logs[i];
-      const status=log?log.status:'';
-      const cls=status==='Done'?'done':status==='Not Done'?'miss':'empty';
-      const icon=status==='Done'?'✓':status==='Not Done'?'✗':'·';
-      html+=`<td class="cg-cell-wrap"><button class="cg-cell ${cls}" data-habit="${h.habit_name}" data-day="${dayLabels[i].full}" data-status="${status||'No entry'}" aria-label="${h.habit_name} ${dayLabels[i].full}: ${status||'no entry'}">${icon}</button></td>`;
-    }
-    html+=`<td class="cg-bar-wrap"><div class="cg-bar-bg"><div class="cg-bar-fill" style="width:${pct}%;background:${pctColor}"></div></div></td>
-    <td class="cg-pct" style="color:${pctColor}">${pct}%</td></tr>`;
-  });
-  html+=`</tbody></table>`;
-
-  // summary
-  const overallPct=totalPossible?Math.round((totalDone/totalPossible)*100):0;
-  const bestDayIdx=perfectDays.indexOf(Math.max(...perfectDays));
-  const bestDay=dayLabels[bestDayIdx]?.short||'—';
-  html+=`<div class="cg-summary">
-    <div class="cg-stat"><div class="cg-stat-val" style="color:var(--green)">${overallPct}%</div><div class="cg-stat-label">Overall completion</div></div>
-    <div class="cg-stat"><div class="cg-stat-val" style="color:var(--amber-text)">${bestStreakHabit.streak}d</div><div class="cg-stat-label">Best streak · ${bestStreakHabit.name}</div></div>
-    <div class="cg-stat"><div class="cg-stat-val" style="font-size:15px;padding-top:2px">${bestDay}</div><div class="cg-stat-label">Most consistent day</div></div>
-  </div>
-  <div class="cg-tooltip" id="cgTooltip"></div>`;
-
-  el.innerHTML=html;
-
-  // tooltip
-  const tip=document.getElementById('cgTooltip');
-  el.querySelectorAll('.cg-cell').forEach(btn=>{
-    btn.addEventListener('mouseenter',()=>{
-      const s=btn.dataset.status;
-      const c=s==='Done'?'#3B6D11':s==='Not Done'?'#A32D2D':'var(--text2)';
-      tip.innerHTML=`<span style="font-weight:500">${btn.dataset.habit}</span><br><span style="color:var(--text2)">${btn.dataset.day}</span> — <span style="color:${c};font-weight:500">${s==='Done'?'Completed':s==='Not Done'?'Missed':'No entry'}</span>`;
-      tip.style.opacity='1';
-    });
-    btn.addEventListener('mousemove',e=>{tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-40)+'px';});
-    btn.addEventListener('mouseleave',()=>tip.style.opacity='0');
-  });
+async function submitHabit(){
+  const n=document.getElementById('newHabitName').value.trim();if(!n){alert('Enter a habit name.');return;}
+  try{const res=await apiPost({action:'addHabit',data:{habit_name:n,category:document.getElementById('newHabitCat').value,sort_order:habitsData.length+1}});if(res.success){document.getElementById('newHabitName').value='';document.getElementById('addHabitForm').style.display='none';loadHabitsPage();}}catch(e){alert('Error: '+e.message);}
 }
+async function archiveHabit(id,name){if(!confirm('Archive "'+name+'"?'))return;try{await apiPost({action:'archiveHabit',data:{habit_id:id}});loadHabitsPage();}catch(e){alert('Error: '+e.message);}}
 
-// GOALS
-let goalsData=[];
-function toggleGoalForm(show){document.getElementById('goalFormCard').style.display=show?'block':'none';if(show){const now=new Date();document.getElementById('gf-start').value=todayStr;const end=new Date(now);end.setMonth(end.getMonth()+1);document.getElementById('gf-target').value=end.toISOString().split('T')[0];}}
-async function loadGoals(){
-  document.getElementById('goalsList').innerHTML='<div class="loading"><div class="spinner"></div> Loading goals…</div>';
+/* ── GOALS PAGE ── */
+async function loadGoalsPage(){
+  document.getElementById('goalsList').innerHTML='<div class="ldg" style="grid-column:unset"><div class="sp-anim"></div>Loading…</div>';
   try{
     const goals=await apiGet({action:'getGoals'});
-    goalsData=Array.isArray(goals)?goals:[];
-    const active=goalsData.filter(g=>g.status==='Active').length;
-    const avgPct=goalsData.length?Math.round(goalsData.reduce((s,g)=>s+Number(g.manual_progress||0),0)/goalsData.length):0;
-    document.getElementById('goalSummaryRow').innerHTML=`<div class="metric-card"><div class="metric-label"><i class="ti ti-target" style="font-size:12px"></i>Active goals</div><div class="metric-value">${active}</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-chart-bar" style="font-size:12px"></i>Avg progress</div><div class="metric-value">${avgPct}<span style="font-size:13px;color:var(--text2)">%</span></div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-circle-check" style="font-size:12px"></i>Completed</div><div class="metric-value">${goalsData.filter(g=>g.status==='Completed').length}</div></div><div class="metric-card"><div class="metric-label"><i class="ti ti-list" style="font-size:12px"></i>Total goals</div><div class="metric-value">${goalsData.length}</div></div>`;
-    if(!goalsData.length){document.getElementById('goalsList').innerHTML=`<div class="empty-state"><i class="ti ti-target"></i><h3>No goals yet</h3><p>Click "New goal" to add your first goal.</p></div>`;return;}
-    const allTasks=await apiGet({action:'getTasks'});const allMilestones=await apiGet({action:'getMilestones'});
-    const tasks=Array.isArray(allTasks)?allTasks:[];const milestones=Array.isArray(allMilestones)?allMilestones:[];
-    let html='';
-    goalsData.forEach(g=>{
-      const gTasks=tasks.filter(t=>t.goal_id===g.goal_id);const doneTasks=gTasks.filter(t=>t.status==='Done').length;
-      const taskPct=gTasks.length?Math.round((doneTasks/gTasks.length)*100):0;
-      const manPct=Number(g.manual_progress||0);
-      const gMilestones=milestones.filter(m=>m.goal_id===g.goal_id);
-      const catColor=g.category==='Academic'?'var(--blue-bg);color:var(--blue-text)':g.category==='Health'?'var(--green-bg);color:var(--green-text)':g.category==='Fitness'?'var(--amber-bg);color:var(--amber-text)':'var(--surface2);color:var(--text2)';
-      const statusColor=g.status==='Active'?'var(--green-text)':g.status==='Completed'?'var(--blue-text)':'var(--text3)';
-      html+=`<div class="goal-card">
-        <div class="goal-card-header">
-          <div><div class="goal-card-name">${g.goal_name}</div><div style="font-size:11px;color:${statusColor};margin-top:2px">${g.status}</div></div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:${catColor}">${g.category}</span>
-            <button class="icon-btn" onclick="markGoalDone('${g.goal_id}')"><i class="ti ti-circle-check"></i></button>
-          </div>
+    const G=Array.isArray(goals)?goals:[];
+    const active=G.filter(g=>g.status==='Active').length,completed=G.filter(g=>g.status==='Completed').length;
+    const avgPct=G.length?Math.round(G.reduce((s,g)=>s++(g.manual_progress||0),0)/G.length):0;
+    document.getElementById('goalSummary').innerHTML=`
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px">Active Goals</div><div style="font-size:22px;font-weight:700;color:var(--grn)">${active}</div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px">Avg Progress</div><div style="font-size:22px;font-weight:700;color:var(--blu)">${avgPct}<span style="font-size:12px;color:var(--t2)">%</span></div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px">Completed</div><div style="font-size:22px;font-weight:700;color:var(--amb)">${completed}</div></div>
+      <div class="form-card" style="margin-bottom:0"><div style="font-size:9px;color:var(--t2);margin-bottom:4px">Total Goals</div><div style="font-size:22px;font-weight:700;color:var(--pur)">${G.length}</div></div>`;
+    if(!G.length){document.getElementById('goalsList').innerHTML='<div style="text-align:center;padding:40px;color:var(--t2)"><i class="ti ti-target" style="font-size:36px;display:block;margin-bottom:10px;color:var(--t3)"></i>No goals yet. Click "New goal" to start.</div>';return;}
+    const allTasks=await apiGet({action:'getTasks'});const allMs=await apiGet({action:'getMilestones'});
+    const tasks=Array.isArray(allTasks)?allTasks:[],milestones=Array.isArray(allMs)?allMs:[];
+    const cols=['#a78bfa','#4f8ef7','#00d4a0','#f59e0b','#ef4444','#06b6d4'];
+    document.getElementById('goalsList').innerHTML=G.map((g,i)=>{
+      const gTasks=tasks.filter(t=>t.goal_id===g.goal_id),doneTasks=gTasks.filter(t=>t.status==='Done').length;
+      const tp=gTasks.length?Math.round(doneTasks/gTasks.length*100):0,mp=+(g.manual_progress||0),col=cols[i%cols.length];
+      const gMs=milestones.filter(m=>m.goal_id===g.goal_id);
+      return `<div class="goal-card">
+        <div class="goal-card-hdr"><div><div class="goal-card-name">${g.goal_name}</div><div style="font-size:9.5px;color:${g.status==='Active'?'var(--grn)':'var(--t2)'};margin-top:2px">${g.status}</div></div><span class="goal-cat-badge">${g.category}</span></div>
+        ${g.description?`<div style="font-size:11px;color:var(--t2);margin-bottom:8px">${g.description}</div>`:''}
+        <div class="goal-meta"><span><i class="ti ti-calendar" style="font-size:10px"></i> ${g.start_date||'—'}</span><span><i class="ti ti-flag" style="font-size:10px"></i> ${g.target_date||'—'}</span><span><i class="ti ti-clock" style="font-size:10px"></i> ${g.duration_type||'Monthly'}</span></div>
+        <div class="goal-prog-row"><div class="goal-prog-lbl" style="color:${col}">Manual ${mp}%</div><div class="goal-prog-track"><div class="goal-prog-fill" style="width:${mp}%;background:${col}"></div></div></div>
+        <div class="goal-prog-row"><div class="goal-prog-lbl" style="color:var(--blu)">Tasks ${tp}%</div><div class="goal-prog-track"><div class="goal-prog-fill" style="width:${tp}%;background:var(--blu)"></div></div></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">
+          <input type="number" id="gmp${i}" min="0" max="100" value="${mp}" style="width:65px;padding:4px 8px;border:1px solid rgba(255,255,255,.1);border-radius:6px;font-size:11px;background:rgba(255,255,255,.05);color:var(--t);outline:none">
+          <button class="btn btn-sm" onclick="updateGP('${g.goal_id}',${i})"><i class="ti ti-refresh"></i>Update %</button>
+          <button class="btn btn-sm" onclick="addMS('${g.goal_id}')"><i class="ti ti-plus"></i>Milestone</button>
+          ${g.status==='Active'?`<button class="btn btn-sm" onclick="markGoalDone('${g.goal_id}')"><i class="ti ti-circle-check"></i>Complete</button>`:''}
         </div>
-        ${g.description?`<div class="goal-card-desc">${g.description}</div>`:''}
-        <div class="goal-card-meta">
-          <span><i class="ti ti-calendar" style="font-size:11px"></i> Start: ${g.start_date||'—'}</span>
-          <span><i class="ti ti-flag" style="font-size:11px"></i> Target: ${g.target_date||'—'}</span>
-          <span><i class="ti ti-clock" style="font-size:11px"></i> ${g.duration_type||'Monthly'}</span>
-        </div>
-        <div class="goal-progress-dual">
-          <div class="dual-label">Manual ${manPct}%</div>
-          <div class="dual-track"><div class="dual-fill-m" style="width:${manPct}%"></div></div>
-        </div>
-        <div class="goal-progress-dual">
-          <div class="dual-label">Tasks ${taskPct}%</div>
-          <div class="dual-track"><div class="dual-fill-t" style="width:${taskPct}%"></div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
-          <input type="number" min="0" max="100" value="${manPct}" style="width:70px;padding:4px 8px;border:0.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit" id="mp-${g.goal_id}" placeholder="%">
-          <button class="btn btn-sm" onclick="updateManualProgress('${g.goal_id}')"><i class="ti ti-refresh"></i> Update progress</button>
-          <button class="btn btn-sm" onclick="showAddMilestone('${g.goal_id}')"><i class="ti ti-plus"></i> Add milestone</button>
-        </div>
-        ${gMilestones.length?`<div class="milestone-list">${gMilestones.map(m=>{const mTasks=tasks.filter(t=>t.milestone_id===m.milestone_id);return `<div class="milestone-item"><div class="ms-check ${m.status==='Done'?'done':''}" onclick="toggleMilestone('${m.milestone_id}','${m.status}')">${m.status==='Done'?'✓':''}</div><div style="flex:1"><div style="font-weight:500">${m.milestone_name}</div>${m.due_date?`<div style="font-size:10px;color:var(--text3)">${m.due_date}</div>`:''}</div><button class="icon-btn btn-sm" onclick="showAddTask('${m.milestone_id}','${g.goal_id}')"><i class="ti ti-plus"></i></button></div>${mTasks.length?`<div class="task-list">${mTasks.map(t=>`<div class="task-item"><div class="task-check ${t.status==='Done'?'done':''}" onclick="toggleTask('${t.task_id}','${t.status}')"></div>${t.task_name}</div>`).join('')}</div>`:''}`}).join('')}</div>`:``}
+        ${gMs.length?`<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)">${gMs.map(m=>{const mTasks=tasks.filter(t=>t.milestone_id===m.milestone_id);return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:11px"><div style="width:14px;height:14px;border-radius:4px;border:1.5px solid ${m.status==='Done'?'var(--grn)':'rgba(255,255,255,.2)'};background:${m.status==='Done'?'var(--grn)':'transparent'};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" onclick="togMS('${m.milestone_id}','${m.status}')">${m.status==='Done'?'<span style=\'font-size:9px;color:#000\'>✓</span>':''}</div><span style="flex:1;${m.status==='Done'?'text-decoration:line-through;color:var(--t2)':''}">${m.milestone_name}</span>${m.due_date?`<span style="font-size:9px;color:var(--t3)">${m.due_date}</span>`:''}<button style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:11px" onclick="addTask('${m.milestone_id}','${g.goal_id}')"><i class="ti ti-plus"></i></button></div>${mTasks.length?`<div style="margin-left:22px">${mTasks.map(t=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:10px;color:var(--t2)"><div style="width:11px;height:11px;border-radius:3px;border:1.5px solid ${t.status==='Done'?'var(--grn)':'rgba(255,255,255,.15)'};background:${t.status==='Done'?'var(--grn)':'transparent'};cursor:pointer;flex-shrink:0" onclick="togTask('${t.task_id}','${t.status}')"></div>${t.task_name}</div>`).join('')}</div>`:''}`}).join('')}</div>`:``}
       </div>`;
-    });
-    document.getElementById('goalsList').innerHTML=html;
-  }catch(e){document.getElementById('goalsList').innerHTML=`<div class="empty-state"><i class="ti ti-wifi-off"></i><h3>Could not connect</h3><p style="font-size:12px;color:var(--text2)">${e.message}</p></div>`;}
+    }).join('');
+  }catch(e){document.getElementById('goalsList').innerHTML=`<p style="color:var(--red);font-size:12px;padding:12px">Error: ${e.message}</p>`;}
 }
 async function submitGoal(){
-  const name=document.getElementById('gf-name').value.trim();if(!name){alert('Please enter a goal name.');return;}
-  try{const res=await apiPost({action:'saveGoal',data:{goal_name:name,category:document.getElementById('gf-cat').value,description:document.getElementById('gf-desc').value,start_date:document.getElementById('gf-start').value,target_date:document.getElementById('gf-target').value,duration_type:document.getElementById('gf-duration').value,status:'Active',manual_progress:document.getElementById('gf-progress').value||0}});
-  if(res.success){toggleGoalForm(false);loadGoals();}}catch(e){alert('Could not save: '+e.message);}
+  const n=document.getElementById('gf-name').value.trim();if(!n){alert('Enter a goal name.');return;}
+  try{const res=await apiPost({action:'saveGoal',data:{goal_name:n,category:document.getElementById('gf-cat').value,description:document.getElementById('gf-desc').value,start_date:document.getElementById('gf-start').value,target_date:document.getElementById('gf-target').value,duration_type:document.getElementById('gf-dur').value,status:'Active',manual_progress:document.getElementById('gf-prog').value||0}});
+  if(res.success){document.getElementById('newGoalForm').style.display='none';loadGoalsPage();}}catch(e){alert('Error: '+e.message);}
 }
-async function updateManualProgress(gid){const val=document.getElementById('mp-'+gid).value;try{await apiPost({action:'updateGoalProgress',data:{goal_id:gid,manual_progress:val}});loadGoals();}catch(e){alert('Could not update: '+e.message);}}
-async function markGoalDone(gid){if(!confirm('Mark this goal as completed?'))return;try{await apiPost({action:'saveGoal',data:{goal_id:gid,status:'Completed'}});loadGoals();}catch(e){alert('Error: '+e.message);}}
-async function toggleMilestone(mid,cur){const ns=cur==='Done'?'Pending':'Done';try{await apiPost({action:'updateMilestoneStatus',data:{milestone_id:mid,status:ns}});loadGoals();}catch(e){alert('Error: '+e.message);}}
-async function toggleTask(tid,cur){const ns=cur==='Done'?'Pending':'Done';try{await apiPost({action:'updateTaskStatus',data:{task_id:tid,status:ns}});loadGoals();}catch(e){alert('Error: '+e.message);}}
-async function showAddMilestone(gid){const name=prompt('Milestone name:');if(!name)return;const due=prompt('Due date (YYYY-MM-DD):',todayStr);try{await apiPost({action:'saveMilestone',data:{goal_id:gid,milestone_name:name,due_date:due||''}});loadGoals();}catch(e){alert('Error: '+e.message);}}
-async function showAddTask(mid,gid){const name=prompt('Task name:');if(!name)return;try{await apiPost({action:'saveTask',data:{milestone_id:mid,goal_id:gid,task_name:name}});loadGoals();}catch(e){alert('Error: '+e.message);}}
+async function updateGP(gid,i){const v=document.getElementById('gmp'+i).value;try{await apiPost({action:'updateGoalProgress',data:{goal_id:gid,manual_progress:v}});loadGoalsPage();}catch(e){alert('Error: '+e.message);}}
+async function markGoalDone(gid){if(!confirm('Mark as completed?'))return;try{await apiPost({action:'saveGoal',data:{goal_id:gid,status:'Completed'}});loadGoalsPage();}catch(e){}}
+async function togMS(mid,cur){try{await apiPost({action:'updateMilestoneStatus',data:{milestone_id:mid,status:cur==='Done'?'Pending':'Done'}});loadGoalsPage();}catch(e){}}
+async function togTask(tid,cur){try{await apiPost({action:'updateTaskStatus',data:{task_id:tid,status:cur==='Done'?'Pending':'Done'}});loadGoalsPage();}catch(e){}}
+async function addMS(gid){const n=prompt('Milestone name:');if(!n)return;const due=prompt('Due date (YYYY-MM-DD):',todayStr);try{await apiPost({action:'saveMilestone',data:{goal_id:gid,milestone_name:n,due_date:due||''}});loadGoalsPage();}catch(e){}}
+async function addTask(mid,gid){const n=prompt('Task name:');if(!n)return;try{await apiPost({action:'saveTask',data:{milestone_id:mid,goal_id:gid,task_name:n}});loadGoalsPage();}catch(e){}}
 
-// PATTERNS
+/* ── ARTHRITIS PAGE ── */
+function buildArtJoints(){
+  const J=[{n:'Shoulder',v:7,c:'#ef4444',g:'linear-gradient(90deg,#ef4444,#f87171)'},{n:'Neck',v:6,c:'#f59e0b',g:'linear-gradient(90deg,#f59e0b,#fbbf24)'},{n:'Back',v:6,c:'#f59e0b',g:'linear-gradient(90deg,#f59e0b,#fbbf24)'},{n:'Hip',v:5,c:'#4f8ef7',g:'linear-gradient(90deg,#4f8ef7,#7ab3ff)'}];
+  const el=document.getElementById('artJoints');if(!el)return;
+  el.innerHTML=J.map(j=>`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>${j.n}</span><span style="font-weight:700;color:${j.c}">${j.v}/10</span></div><div style="height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden"><div style="height:100%;width:${j.v*10}%;background:${j.g};border-radius:3px"></div></div></div>`).join('');
+  if(!window._artTrig&&document.getElementById('artTrigChart')){window._artTrig=true;buildTrig('artTrigChart',110);}
+  if(!window._artPain&&document.getElementById('artPainChart')){window._artPain=true;new Chart(document.getElementById('artPainChart'),{type:'line',data:{labels:['May 8','May 11','May 14','May 17','May 20','May 23','May 26','May 29','Jun 1','Jun 4','Jun 6'],datasets:[{label:'Pain',data:[6,7,5,8,6,4,5,7,6,5,6],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.08)',borderWidth:2,pointRadius:3.5,pointBackgroundColor:'#ef4444',tension:.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:10,ticks:{font:{size:9},color:'rgba(120,140,180,.45)'},grid:{color:'rgba(255,255,255,.04)'}},x:{ticks:{font:{size:9},color:'rgba(120,140,180,.45)'},grid:{display:false}}}}});}
+}
+
+/* ── PATTERNS ── */
 async function loadPatterns(){
-  const el=document.getElementById('patternContent');
-  el.innerHTML='<div class="loading"><div class="spinner"></div> Analysing your data…</div>';
-  const days=document.getElementById('patternRange').value;
+  const el=document.getElementById('patContent');if(!el)return;
+  el.innerHTML='<div class="ldg" style="grid-column:unset"><div class="sp-anim"></div>Analysing your data…</div>';
+  const days=document.getElementById('patRange')?.value||30;
   try{
     const history=await apiGet({action:'getHistory',days});
     const data=Array.isArray(history)?history:[];
-    if(data.length<3){el.innerHTML=`<div class="empty-state"><i class="ti ti-chart-dots"></i><h3>Not enough data yet</h3><p>Log at least 3 days in Daily Reflection to see patterns.</p></div>`;return;}
-    // compute correlations
-    function corr(xs,ys){const n=xs.length;if(n<2)return 0;const mx=xs.reduce((a,b)=>a+b)/n,my=ys.reduce((a,b)=>a+b)/n;const num=xs.reduce((s,x,i)=>s+(x-mx)*(ys[i]-my),0);const den=Math.sqrt(xs.reduce((s,x)=>s+(x-mx)**2,0)*ys.reduce((s,y)=>s+(y-my)**2,0));return den===0?0:num/den;}
-    const pain=data.map(r=>Number(r.pain_overall)||0);
-    const energy=data.map(r=>Number(r.energy)||0);
-    const mood=data.map(r=>Number(r.mood)||0);
-    const sleep=data.map(r=>Number(r.sleep_hours)||0);
-    const fatigue=data.map(r=>Number(r.fatigue)||0);
-    const corrs=[
-      {label:'Pain ↔ Energy',val:corr(pain,energy)},
-      {label:'Pain ↔ Mood',val:corr(pain,mood)},
-      {label:'Sleep ↔ Energy',val:corr(sleep,energy)},
-      {label:'Sleep ↔ Pain',val:corr(sleep,pain)},
-      {label:'Fatigue ↔ Pain',val:corr(fatigue,pain)},
-      {label:'Mood ↔ Energy',val:corr(mood,energy)},
-    ];
-    // insights
-    const avgPain=pain.reduce((a,b)=>a+b,0)/pain.length;
-    const avgEnergy=energy.reduce((a,b)=>a+b,0)/energy.length;
-    const avgSleep=sleep.reduce((a,b)=>a+b,0)/sleep.length;
-    const flares=data.filter(r=>r.flare_up==='Yes').length;
-    const insightsHtml=[
-      avgPain>5?`<div class="insight-card"><i class="ti ti-alert-circle insight-icon"></i>Your average pain over this period is <strong>${avgPain.toFixed(1)}/10</strong> — consider discussing this with your doctor.</div>`:`<div class="insight-card"><i class="ti ti-shield-check insight-icon"></i>Your average pain over this period is <strong>${avgPain.toFixed(1)}/10</strong> — well managed.</div>`,
-      avgSleep<7?`<div class="insight-card"><i class="ti ti-moon insight-icon"></i>Average sleep is <strong>${avgSleep.toFixed(1)} hours</strong> — below the recommended 7+ hours. Poor sleep is linked to higher pain scores.</div>`:`<div class="insight-card"><i class="ti ti-moon insight-icon"></i>Average sleep is <strong>${avgSleep.toFixed(1)} hours</strong> — good sleep hygiene detected.</div>`,
-      corrs[0].val<-0.4?`<div class="insight-card"><i class="ti ti-trending-down insight-icon"></i>Strong negative correlation between pain and energy (${corrs[0].val.toFixed(2)}). Higher pain days consistently show lower energy.</div>`:'',
-      corrs[2].val>0.4?`<div class="insight-card"><i class="ti ti-trending-up insight-icon"></i>Sleep and energy are positively correlated (${corrs[2].val.toFixed(2)}). Better sleep reliably improves your energy.</div>`:'',
-      flares>0?`<div class="insight-card"><i class="ti ti-flame insight-icon"></i><strong>${flares} flare-up day${flares>1?'s':''}</strong> detected in this period.</div>`:'',
-    ].filter(Boolean).join('');
-
-    let html=`<div class="g2" style="margin-bottom:14px">
-      <div class="card"><div class="card-title"><i class="ti ti-bulb"></i> AI insights</div>${insightsHtml||'<p style="font-size:12px;color:var(--text2)">Add more data to generate insights.</p>'}</div>
-      <div class="card"><div class="card-title"><i class="ti ti-chart-bar"></i> Correlation engine</div>`;
-    corrs.forEach(c=>{
-      const abs=Math.abs(c.val);const pct=Math.round(abs*100);
-      const col=c.val>0?'var(--green)':c.val<0?'var(--red)':'var(--text3)';
-      const strength=abs>0.6?'Strong':abs>0.3?'Moderate':'Weak';
-      html+=`<div class="corr-row"><div class="corr-label">${c.label}</div><div class="corr-bar-wrap"><div class="corr-bar" style="width:${pct}%;background:${col}"></div></div><div class="corr-val" style="color:${col}">${c.val>=0?'+':''}${c.val.toFixed(2)}</div><div style="font-size:10px;color:var(--text3);min-width:50px">${strength}</div></div>`;
-    });
-    html+=`</div></div>`;
-
-    html+=`<div class="card"><div class="card-title"><i class="ti ti-chart-line"></i> 30-day pain · energy · mood trend</div><div style="position:relative;height:200px"><canvas id="patternChart"></canvas></div></div>`;
-
-    // best days
-    const dayTotals={};const dayCounts={};
-    data.forEach(r=>{const d=new Date(String(r.date).substring(0,10)).toLocaleDateString('en-US',{weekday:'long'});dayTotals[d]=(dayTotals[d]||0)+(10-Number(r.pain_overall||0));dayCounts[d]=(dayCounts[d]||0)+1;});
-    const dayAvgs=Object.keys(dayTotals).map(d=>({day:d,avg:dayTotals[d]/dayCounts[d]})).sort((a,b)=>b.avg-a.avg);
-    html+=`<div class="g2"><div class="card"><div class="card-title"><i class="ti ti-star"></i> Best days of the week</div>`;
-    dayAvgs.slice(0,3).forEach((d,i)=>{const medal=i===0?'🥇':i===1?'🥈':'🥉';html+=`<div class="streak-item"><span class="streak-name">${medal} ${d.day}</span><span style="font-size:12px;color:var(--green-text)">Score ${d.avg.toFixed(1)}</span></div>`;});
-    html+=`</div><div class="card"><div class="card-title"><i class="ti ti-calendar-stats"></i> Summary statistics</div>`;
-    html+=`<div class="report-row"><span>Data points</span><span style="font-weight:500">${data.length} days</span></div>`;
-    html+=`<div class="report-row"><span>Avg pain</span><span style="font-weight:500">${avgPain.toFixed(1)}/10</span></div>`;
-    html+=`<div class="report-row"><span>Avg energy</span><span style="font-weight:500">${avgEnergy.toFixed(1)}/10</span></div>`;
-    html+=`<div class="report-row"><span>Avg sleep</span><span style="font-weight:500">${avgSleep.toFixed(1)} hrs</span></div>`;
-    html+=`<div class="report-row"><span>Flare-up days</span><span style="font-weight:500">${flares}</span></div>`;
-    html+=`</div></div>`;
-    el.innerHTML=html;
-    const labels=data.map(r=>{const d=new Date(String(r.date).substring(0,10));return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});});
-    new Chart(document.getElementById('patternChart'),{type:'line',data:{labels,datasets:[{label:'Mood',data:mood,borderColor:'#1D9E75',backgroundColor:'transparent',borderWidth:1.5,pointRadius:2,tension:0.3},{label:'Energy',data:energy,borderColor:'#378ADD',backgroundColor:'transparent',borderWidth:1.5,pointRadius:2,tension:0.3},{label:'Pain',data:pain,borderColor:'#E24B4A',backgroundColor:'rgba(226,75,74,0.05)',borderWidth:1.5,pointRadius:2,tension:0.3,fill:true,borderDash:[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:12}}},scales:{y:{min:0,max:10,ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{font:{size:9},maxTicksLimit:10},grid:{display:false}}}}});
-  }catch(e){el.innerHTML=`<div class="empty-state"><i class="ti ti-wifi-off"></i><h3>Could not load patterns</h3><p style="font-size:12px;color:var(--text2)">${e.message}</p></div>`;}
+    if(data.length<3){el.innerHTML=`<div style="text-align:center;padding:40px;color:var(--t2)"><i class="ti ti-chart-dots" style="font-size:36px;display:block;margin-bottom:10px;color:var(--t3)"></i>Not enough data yet. Log at least 3 days to see patterns.</div>`;return;}
+    function corr(xs,ys){const n=xs.length;if(n<2)return 0;const mx=xs.reduce((a,b)=>a+b)/n,my=ys.reduce((a,b)=>a+b)/n;const num=xs.reduce((s,x,i)=>s+(x-mx)*(ys[i]-my),0),den=Math.sqrt(xs.reduce((s,x)=>s+(x-mx)**2,0)*ys.reduce((s,y)=>s+(y-my)**2,0));return den===0?0:num/den;}
+    const pain=data.map(r=>+r.pain_overall||0),energy=data.map(r=>+r.energy||0),mood=data.map(r=>+r.mood||0),sleep=data.map(r=>+r.sleep_hours||0),fatigue=data.map(r=>+r.fatigue||0);
+    const corrs=[{label:'Pain ↔ Energy',val:corr(pain,energy)},{label:'Pain ↔ Mood',val:corr(pain,mood)},{label:'Sleep ↔ Energy',val:corr(sleep,energy)},{label:'Sleep ↔ Pain',val:corr(sleep,pain)},{label:'Fatigue ↔ Pain',val:corr(fatigue,pain)},{label:'Mood ↔ Energy',val:corr(mood,energy)}];
+    const avgPain=(pain.reduce((a,b)=>a+b,0)/pain.length).toFixed(1),avgSleep=(sleep.reduce((a,b)=>a+b,0)/sleep.length).toFixed(1),flares=data.filter(r=>r.flare_up==='Yes').length;
+    const corrHtml=corrs.map(c=>{const abs=Math.abs(c.val),pct=Math.round(abs*100),col=c.val>0?'var(--grn)':c.val<0?'var(--red)':'var(--t2)',str=abs>.6?'Strong':abs>.3?'Moderate':'Weak';return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:11px"><div style="min-width:160px;color:var(--t2)">${c.label}</div><div style="flex:1;height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div></div><div style="font-weight:700;color:${col};min-width:38px;text-align:right">${c.val>=0?'+':''}${c.val.toFixed(2)}</div><div style="font-size:9.5px;color:var(--t3);min-width:48px">${str}</div></div>`;}).join('');
+    el.innerHTML=`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="form-card"><div class="form-title"><i class="ti ti-bulb" style="color:var(--pur)"></i>AI Insights</div>
+          <div class="ins-item"><div class="ins-ico" style="background:rgba(0,212,160,.14)">📊</div><div><div class="ins-txt">Average pain over this period: <strong style="color:var(--amb)">${avgPain}/10</strong>${+avgPain>5?' — consider discussing with your doctor.':' — well managed.'}</div></div></div>
+          <div class="ins-item"><div class="ins-ico" style="background:rgba(79,142,247,.13)">😴</div><div><div class="ins-txt">Average sleep: <strong style="color:var(--pur)">${avgSleep}h</strong>${+avgSleep<7?' — below recommended 7+ hours.':' — good sleep hygiene.'}</div></div></div>
+          <div class="ins-item"><div class="ins-ico" style="background:rgba(239,68,68,.13)">⚡</div><div><div class="ins-txt"><strong style="color:var(--red)">${flares} flare-up day${flares!==1?'s':''}</strong> detected in this period.</div></div></div>
+        </div>
+        <div class="form-card"><div class="form-title"><i class="ti ti-chart-bar" style="color:var(--blu)"></i>Correlation Engine</div>${corrHtml}</div>
+      </div>
+      <div class="form-card"><div class="form-title"><i class="ti ti-chart-line" style="color:var(--grn)"></i>Trend Analysis (${data.length} days)</div><div style="position:relative;height:180px"><canvas id="patChart"></canvas></div></div>`;
+    const lbl=data.map(r=>{const dt=new Date(String(r.date).substring(0,10));return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});});
+    new Chart(document.getElementById('patChart'),{type:'line',data:{labels:lbl,datasets:[{label:'Mood',data:mood,borderColor:'#00d4a0',backgroundColor:'transparent',borderWidth:1.5,pointRadius:2,tension:.3},{label:'Energy',data:energy,borderColor:'#4f8ef7',backgroundColor:'transparent',borderWidth:1.5,pointRadius:2,tension:.3},{label:'Pain',data:pain,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.06)',borderWidth:1.5,pointRadius:2,tension:.3,fill:true,borderDash:[3,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10,color:'rgba(120,140,180,.7)'}}},scales:{y:{min:0,max:10,ticks:{font:{size:9},color:'rgba(120,140,180,.45)'},grid:{color:'rgba(255,255,255,.04)'}},x:{ticks:{font:{size:9},color:'rgba(120,140,180,.45)',maxTicksLimit:10},grid:{display:false}}}}});
+  }catch(e){el.innerHTML=`<p style="color:var(--red);font-size:12px;padding:12px">Error: ${e.message}</p>`;}
 }
 
-// REPORTS
-function initReport(){const now=new Date();const from=new Date(now);from.setDate(from.getDate()-30);document.getElementById('rep-from').value=from.toISOString().split('T')[0];document.getElementById('rep-to').value=todayStr;}
+/* ── REPORTS ── */
+function initReport(){const f=new Date(now);f.setDate(f.getDate()-30);const r1=document.getElementById('rep-from'),r2=document.getElementById('rep-to');if(r1)r1.value=f.toISOString().split('T')[0];if(r2)r2.value=todayStr;}
 async function generateReport(){
-  const from=document.getElementById('rep-from').value;const to=document.getElementById('rep-to').value;
-  if(!from||!to){alert('Please select a date range.');return;}
+  const fr=document.getElementById('rep-from').value,to=document.getElementById('rep-to').value;
+  if(!fr||!to){alert('Select a date range.');return;}
   const el=document.getElementById('reportContent');
-  el.innerHTML='<div class="loading"><div class="spinner"></div> Generating report…</div>';
+  el.innerHTML='<div class="ldg" style="grid-column:unset"><div class="sp-anim"></div>Generating…</div>';
   try{
     const history=await apiGet({action:'getHistory',days:90});
-    const data=(Array.isArray(history)?history:[]).filter(r=>{const d=String(r.date).substring(0,10);return d>=from&&d<=to;});
-    if(!data.length){el.innerHTML='<div class="empty-state"><i class="ti ti-file-off"></i><h3>No data in this range</h3><p>Log some daily entries first.</p></div>';return;}
-    const avgPain=(data.reduce((s,r)=>s+Number(r.pain_overall||0),0)/data.length).toFixed(1);
-    const avgMood=(data.reduce((s,r)=>s+Number(r.mood||0),0)/data.length).toFixed(1);
-    const avgEnergy=(data.reduce((s,r)=>s+Number(r.energy||0),0)/data.length).toFixed(1);
-    const avgSleep=(data.reduce((s,r)=>s+Number(r.sleep_hours||0),0)/data.length).toFixed(1);
+    const data=(Array.isArray(history)?history:[]).filter(r=>{const d=String(r.date).substring(0,10);return d>=fr&&d<=to;});
+    if(!data.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--t2)">No data in this range.</div>';return;}
+    const avgPain=(data.reduce((s,r)=>s++(r.pain_overall||0),0)/data.length).toFixed(1);
+    const avgMood=(data.reduce((s,r)=>s++(r.mood||0),0)/data.length).toFixed(1);
+    const avgEnergy=(data.reduce((s,r)=>s++(r.energy||0),0)/data.length).toFixed(1);
+    const avgSleep=(data.reduce((s,r)=>s++(r.sleep_hours||0),0)/data.length).toFixed(1);
     const flares=data.filter(r=>r.flare_up==='Yes').length;
-    const maxPain=Math.max(...data.map(r=>Number(r.pain_overall||0)));
-    const minPain=Math.min(...data.map(r=>Number(r.pain_overall||0)));
-    const meds=await apiGet({action:'getMedicationLog',date:todayStr});
-    el.innerHTML=`<div class="card" id="printableReport">
-      <div style="border-bottom:0.5px solid var(--border);padding-bottom:12px;margin-bottom:16px">
-        <div style="font-size:17px;font-weight:500;margin-bottom:4px">Health Summary Report</div>
-        <div style="font-size:12px;color:var(--text2)">Period: ${from} to ${to} · Generated: ${new Date().toLocaleDateString()}</div>
-      </div>
-      <div class="report-section"><h3>Pain summary</h3>
-        <div class="report-row"><span>Average pain score</span><span style="font-weight:500">${avgPain}/10</span></div>
-        <div class="report-row"><span>Highest pain recorded</span><span style="font-weight:500">${maxPain}/10</span></div>
-        <div class="report-row"><span>Lowest pain recorded</span><span style="font-weight:500">${minPain}/10</span></div>
-        <div class="report-row"><span>Flare-up days</span><span style="font-weight:500;color:${flares>0?'var(--red-text)':'var(--green-text)'}">${flares}</span></div>
-      </div>
-      <div class="report-section"><h3>Sleep & wellbeing</h3>
-        <div class="report-row"><span>Average sleep</span><span style="font-weight:500">${avgSleep} hours</span></div>
-        <div class="report-row"><span>Average mood</span><span style="font-weight:500">${avgMood}/10</span></div>
-        <div class="report-row"><span>Average energy</span><span style="font-weight:500">${avgEnergy}/10</span></div>
-        <div class="report-row"><span>Days logged</span><span style="font-weight:500">${data.length}</span></div>
-      </div>
-      <div class="report-section"><h3>Pain trend</h3>
-        <div style="position:relative;height:150px"><canvas id="reportChart"></canvas></div>
-      </div>
-      <div class="report-section"><h3>Clinical notes</h3>
-        <div style="font-size:13px;color:var(--text2);line-height:1.6">
-          ${avgPain>6?'Pain levels are elevated — averaging '+avgPain+'/10 over this period. Patient reports '+flares+' flare-up day(s).':'Pain is generally managed, averaging '+avgPain+'/10 over this period.'}
-          ${avgSleep<6?' Average sleep of '+avgSleep+' hours is below recommended levels, which may be contributing to fatigue and pain levels.':' Sleep is adequate at an average of '+avgSleep+' hours per night.'}
-          ${flares>2?' Multiple flare-up events recorded — review medication and activity patterns.':''}
+    const maxPain=Math.max(...data.map(r=>+(r.pain_overall||0)));
+    el.innerHTML=`<div class="form-card" id="printRep">
+      <div style="border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:12px;margin-bottom:16px"><div style="font-size:17px;font-weight:700;margin-bottom:4px">Health Summary Report</div><div style="font-size:11px;color:var(--t2)">Period: ${fr} to ${to} · Generated: ${new Date().toLocaleDateString()}</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div><div style="font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:8px">Pain Summary</div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px"><span>Average pain</span><span style="font-weight:600;color:var(--amb)">${avgPain}/10</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px"><span>Highest pain</span><span style="font-weight:600;color:var(--red)">${maxPain}/10</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px"><span>Flare-up days</span><span style="font-weight:600;color:${flares>0?'var(--red)':'var(--grn)'}">${flares}</span></div>
+        </div>
+        <div><div style="font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:8px">Wellbeing</div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px"><span>Average mood</span><span style="font-weight:600">${avgMood}/10</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px"><span>Average energy</span><span style="font-weight:600">${avgEnergy}/10</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12px"><span>Average sleep</span><span style="font-weight:600">${avgSleep}h</span></div>
         </div>
       </div>
+      <div style="font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:8px">Pain Trend</div>
+      <div style="position:relative;height:140px;margin-bottom:16px"><canvas id="repChart"></canvas></div>
+      <div style="font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:8px">Clinical Summary</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7">${+avgPain>6?'Pain levels are elevated at an average of '+avgPain+'/10.':'Pain is generally managed at an average of '+avgPain+'/10.'} ${+avgSleep<6?' Average sleep of '+avgSleep+'h is below recommended levels.':' Sleep is adequate at '+avgSleep+'h/night.'} ${flares>0?' '+flares+' flare-up day(s) recorded — review medication and activity patterns.':' No significant flare-ups detected during this period.'}</div>
     </div>`;
-    const labels=data.map(r=>String(r.date).substring(5));
-    new Chart(document.getElementById('reportChart'),{type:'line',data:{labels,datasets:[{label:'Pain',data:data.map(r=>Number(r.pain_overall||0)),borderColor:'#E24B4A',backgroundColor:'rgba(226,75,74,0.08)',borderWidth:1.5,pointRadius:2,tension:0.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:10,ticks:{font:{size:10}}},x:{ticks:{font:{size:9},maxTicksLimit:10},grid:{display:false}}}}});
-  }catch(e){el.innerHTML=`<div class="empty-state"><i class="ti ti-wifi-off"></i><h3>Could not generate report</h3><p style="font-size:12px;color:var(--text2)">${e.message}</p></div>`;}
+    new Chart(document.getElementById('repChart'),{type:'line',data:{labels:data.map(r=>String(r.date).substring(5)),datasets:[{label:'Pain',data:data.map(r=>+(r.pain_overall||0)),borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.08)',borderWidth:1.5,pointRadius:2,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:10,ticks:{font:{size:9},color:'rgba(120,140,180,.45)'}},x:{ticks:{font:{size:8},color:'rgba(120,140,180,.45)',maxTicksLimit:10},grid:{display:false}}}}});
+  }catch(e){el.innerHTML=`<p style="color:var(--red);font-size:12px;padding:12px">Error: ${e.message}</p>`;}
 }
-function printReport(){const el=document.getElementById('printableReport');if(!el){alert('Generate a report first.');return;}window.print();}
 
-// SETTINGS
+/* ── SETTINGS ── */
 async function loadSettings(){
-  try{
-    const settings=await apiGet({action:'getSettings'});
-    if(Array.isArray(settings)){
-      settings.forEach(s=>{
-        const map={user_name:'s-name',timezone:'s-tz',week_start:'s-week',flare_threshold_pain:'s-flare-pain',flare_threshold_days:'s-flare-days',pain_baseline:'s-baseline',claude_api_key:'s-apikey'};
-        if(map[s.key]){const el=document.getElementById(map[s.key]);if(el)el.value=s.value;}
-      });
-    }
-  }catch(e){}
+  try{const s=await apiGet({action:'getSettings'});if(Array.isArray(s)){const map={user_name:'s-name',timezone:'s-tz',week_start:'s-week',flare_threshold_pain:'s-fpain',flare_threshold_days:'s-fdays',pain_baseline:'s-base',claude_api_key:'s-apikey'};s.forEach(x=>{if(map[x.key]){const el=document.getElementById(map[x.key]);if(el)el.value=x.value;}});}}catch(e){}
 }
 async function saveSettings(){
-  const st=document.getElementById('settingsSaveStatus');st.textContent='Saving…';
-  const map={user_name:'s-name',timezone:'s-tz',week_start:'s-week',flare_threshold_pain:'s-flare-pain',flare_threshold_days:'s-flare-days',pain_baseline:'s-baseline',claude_api_key:'s-apikey'};
-  try{
-    for(const[key,id] of Object.entries(map)){const el=document.getElementById(id);if(el)await apiPost({action:'updateSetting',data:{key,value:el.value}});}
-    st.textContent='✓ Saved at '+new Date().toLocaleTimeString();st.style.color='var(--green-text)';
-  }catch(e){st.textContent='Error: '+e.message;st.style.color='var(--red-text)';}
+  const st=document.getElementById('settStatus');st.textContent='Saving…';
+  const map={user_name:'s-name',timezone:'s-tz',week_start:'s-week',flare_threshold_pain:'s-fpain',flare_threshold_days:'s-fdays',pain_baseline:'s-base',claude_api_key:'s-apikey'};
+  try{for(const[key,id] of Object.entries(map)){const el=document.getElementById(id);if(el)await apiPost({action:'updateSetting',data:{key,value:el.value}});}st.textContent='✓ Saved at '+new Date().toLocaleTimeString();st.style.color='var(--grn)';}
+  catch(e){st.textContent='Error: '+e.message;st.style.color='var(--red)';}
 }
 
-// DASHBOARD
-async function loadDashboard(){
-  document.getElementById('dashContent').innerHTML='<div class="loading"><div class="spinner"></div> Loading…</div>';
-  try{
-    const data=await apiGet({action:'getDashboard'});
-    setFlareBadge(data.flare?data.flare.status:'OK');
-    const hasToday=data.daily&&data.daily.mood;
-    const history=data.history_7d||[];
-    const streaks=data.streaks||[];
-    const goals=data.goals||[];
-    const habitLog=data.habit_log||[];
-    const hc=data.habit_completion||{done:0,total:0,pct:0};
-    const fr=data.flare?data.flare.status:'OK';
-    let html='';
-
-    if(hasToday){
-      const d=data.daily;
-      const moodTrend=d.mood>=7?'up':d.mood>=5?'flat':'down';
-      const painHigh=Number(d.pain_overall)>=7;
-
-      // ROW 1 — premium metric cards
-      html+=`<div class="g4 anim-fade anim-fade-1">
-        <div class="metric-card-premium mood">
-          <div class="mcp-label"><i class="ti ti-mood-smile"></i> Mood</div>
-          <div class="mcp-value" style="color:var(--green)">${d.mood}</div>
-          <div class="mcp-sub">out of 10</div>
-          <div class="mcp-trend ${moodTrend}">${moodTrend==='up'?'↑ Good mood today':moodTrend==='flat'?'→ Steady':'↓ Low mood'}</div>
-          <div class="mcp-icon"><i class="ti ti-mood-smile"></i></div>
-        </div>
-        <div class="metric-card-premium energy">
-          <div class="mcp-label"><i class="ti ti-bolt"></i> Energy</div>
-          <div class="mcp-value" style="color:var(--blue)">${d.energy}</div>
-          <div class="mcp-sub">out of 10</div>
-          <div class="mcp-trend ${d.energy>=7?'up':d.energy>=5?'flat':'down'}">${d.energy>=7?'↑ High energy':d.energy>=5?'→ Moderate':'↓ Low energy'}</div>
-          <div class="mcp-icon"><i class="ti ti-bolt"></i></div>
-        </div>
-        <div class="metric-card-premium pain ${painHigh?'high':''}">
-          <div class="mcp-label"><i class="ti ti-activity"></i> Pain</div>
-          <div class="mcp-value" style="color:${painHigh?'var(--red)':'var(--amber)'}">${d.pain_overall}</div>
-          <div class="mcp-sub">${d.pain_severity||'—'} · ${d.flare_up==='Yes'?'Flare-up':'No flare-up'}</div>
-          <div class="mcp-trend ${painHigh?'down':'up'}">${painHigh?'↑ High pain — rest advised':'✓ Manageable'}</div>
-          <div class="mcp-icon"><i class="ti ti-activity"></i></div>
-        </div>
-        <div class="metric-card-premium sleep">
-          <div class="mcp-label"><i class="ti ti-moon"></i> Sleep</div>
-          <div class="mcp-value" style="color:#7C5CBF">${d.sleep_hours}<span style="font-size:16px;font-weight:400">h</span></div>
-          <div class="mcp-sub">Quality ${d.sleep_quality}/10</div>
-          <div class="mcp-trend ${d.sleep_hours>=7?'up':'down'}">${d.sleep_hours>=7?'✓ Well rested':'↓ Below 7h target'}</div>
-          <div class="mcp-icon"><i class="ti ti-moon"></i></div>
-        </div>
-      </div>`;
-    } else {
-      html+=`<div class="empty-state anim-fade"><i class="ti ti-calendar-off"></i><h3>No data for today yet</h3><p>Go to Daily Reflection to log today's mood, energy, pain, and habits.</p><button class="btn btn-primary" onclick="document.querySelector('[data-page=reflection]').click()"><i class="ti ti-pencil"></i> Add today's entry</button></div>`;
-    }
-
-    // ROW 2 — summary cards
-    const bs=streaks.length?streaks[0]:null;
-    const rlColor=fr==='FLARE'?'red':fr==='WARNING'?'amber':'green';
-    const rlText=fr==='FLARE'?'Active flare':fr==='WARNING'?'Pain spike':'Low risk';
-    html+=`<div class="g4 anim-fade anim-fade-2">
-      <div class="sum-card">
-        <div class="sum-icon-wrap green"><i class="ti ti-checklist" style="color:var(--green);font-size:20px"></i></div>
-        <div><div class="sum-val">${hc.pct}<span style="font-size:13px;font-weight:400;color:var(--text2)">%</span></div><div class="sum-label">${hc.done}/${hc.total} habits done</div></div>
-      </div>
-      <div class="sum-card">
-        <div class="sum-icon-wrap blue"><i class="ti ti-target" style="color:var(--blue);font-size:20px"></i></div>
-        <div><div class="sum-val">${data.goal_avg_pct||0}<span style="font-size:13px;font-weight:400;color:var(--text2)">%</span></div><div class="sum-label">${goals.length} active goal${goals.length!==1?'s':''}</div></div>
-      </div>
-      <div class="sum-card">
-        <div class="sum-icon-wrap amber"><i class="ti ti-flame" style="color:var(--amber);font-size:20px"></i></div>
-        <div><div class="sum-val" style="color:var(--amber-text)">${bs?bs.current_streak:0}<span style="font-size:13px;font-weight:400;color:var(--text2)">d</span></div><div class="sum-label">${bs?bs.habit_name:'No streaks yet'}</div></div>
-      </div>
-      <div class="sum-card">
-        <div class="sum-icon-wrap ${rlColor}"><i class="ti ti-shield-check" style="color:var(--${rlColor==='green'?'green':rlColor==='amber'?'amber':'red'}-text);font-size:20px"></i></div>
-        <div><div class="sum-val" style="font-size:16px;padding-top:4px;color:var(--${rlColor==='green'?'green-text':rlColor==='amber'?'amber-text':'red-text'})">${rlText}</div><div class="sum-label">Flare risk</div></div>
-      </div>
-    </div>`;
-
-    // ROW 3 — chart + rings
-    if(history.length>0){
-      html+=`<div class="g65 anim-fade anim-fade-3">
-        <div class="chart-card">
-          <div class="slabel" style="margin-bottom:12px">7-day trend — mood · energy · pain</div>
-          <div style="position:relative;height:170px"><canvas id="weekChart"></canvas></div>
-          <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text2)">
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:3px;background:var(--green);display:inline-block;border-radius:2px"></span>Mood</span>
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:3px;background:var(--blue);display:inline-block;border-radius:2px"></span>Energy</span>
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:3px;border-top:2px dashed var(--red);display:inline-block"></span>Pain</span>
-          </div>
-        </div>
-        <div class="ring-card">
-          <div class="slabel" style="margin-bottom:12px">Progress</div>
-          <div class="ring-row">
-            <div class="ring-wrap"><canvas id="ring1" width="72" height="72"></canvas><div class="ring-val" style="font-size:14px;font-weight:600">${hc.pct}%</div><div class="ring-lbl">Habits</div></div>
-            <div class="ring-wrap"><canvas id="ring2" width="72" height="72"></canvas><div class="ring-val" style="font-size:14px;font-weight:600">${data.goal_avg_pct||0}%</div><div class="ring-lbl">Goals</div></div>
-          </div>
-        </div>
-      </div>`;
-    }
-
-    // ROW 4 — streaks + habit grid + goals
-    html+=`<div class="g3 anim-fade anim-fade-4">
-      <div class="card" style="border-radius:14px">
-        <div class="slabel" style="margin-bottom:12px"><i class="ti ti-flame"></i> Streaks</div>`;
-    if(streaks.length){streaks.slice(0,5).forEach(s=>{
-      const c=s.current_streak>=7?'var(--amber-text)':s.current_streak>=3?'var(--green-text)':'var(--text2)';
-      const fire=s.current_streak>=7?'🔥':s.current_streak>=3?'✦':'·';
-      html+=`<div class="streak-card-item"><span style="font-size:12px;font-weight:500">${s.habit_name}</span><span class="streak-fire-ct" style="color:${c}">${fire} ${s.current_streak}d</span></div>`;
-    });}
-    else html+=`<p style="font-size:12px;color:var(--text2);padding:8px 0">No streaks yet — start logging!</p>`;
-    html+=`</div>`;
-
-    // Habit mini grid
-    html+=`<div class="card" style="border-radius:14px"><div class="slabel" style="margin-bottom:12px"><i class="ti ti-grid-dots"></i> Habit consistency — 7 days</div>`;
-    if(habitLog.length){
-      const names=[...new Set(habitLog.map(h=>h.habit_name))];
-      names.forEach(name=>{
-        const logs=habitLog.filter(h=>h.habit_name===name);
-        const pct=Math.round((logs.filter(h=>h.status==='Done').length/7)*100);
-        const pc=pct>=80?'var(--green-text)':pct>=50?'var(--amber-text)':'var(--red-text)';
-        html+=`<div class="hmini-row"><div class="hmini-name"><span>${name}</span><span style="color:${pc};font-weight:500">${pct}%</span></div><div class="hmini-grid">`;
-        for(let i=0;i<7;i++){const cl=i<logs.length?(logs[i].status==='Done'?'hmini-done':'hmini-miss'):'hmini-empty';html+=`<div class="hmini-cell ${cl}"></div>`;}
-        html+=`</div></div>`;
-      });
-    } else html+=`<p style="font-size:12px;color:var(--text2);padding:8px 0">No habit data yet.</p>`;
-    html+=`</div>`;
-
-    // Goals
-    html+=`<div class="card" style="border-radius:14px"><div class="slabel" style="margin-bottom:12px"><i class="ti ti-target"></i> Goal progress</div>`;
-    if(goals.length){goals.slice(0,4).forEach(g=>{
-      const mp=g.manual_progress||0,tp=g.task_progress||0;
-      html+=`<div class="goal-bar-card">
-        <div class="goal-hdr" style="margin-bottom:6px"><span class="goal-name">${g.goal_name}</span><div class="goal-pcts"><span class="pct-m">M ${mp}%</span><span class="pct-t">T ${tp}%</span></div></div>
-        <div style="height:5px;border-radius:3px;background:var(--surface2);margin-bottom:3px;overflow:hidden"><div style="height:100%;width:${mp}%;background:linear-gradient(90deg,var(--green),#2bb88a);border-radius:3px;transition:width 0.6s"></div></div>
-        <div style="height:5px;border-radius:3px;background:var(--surface2);overflow:hidden"><div style="height:100%;width:${tp}%;background:linear-gradient(90deg,var(--blue),#5BA3F5);border-radius:3px;transition:width 0.6s"></div></div>
-      </div>`;
-    });}
-    else html+=`<p style="font-size:12px;color:var(--text2);padding:8px 0">No active goals yet.</p>`;
-    html+=`</div></div>`;
-
-    document.getElementById('dashContent').innerHTML=html;
-
-    // Charts
-    if(history.length>0){
-      const labels=history.map(r=>{const d=new Date(String(r.date).substring(0,10));return d.toLocaleDateString('en-US',{weekday:'short'});});
-      new Chart(document.getElementById('weekChart'),{type:'line',data:{labels,datasets:[
-        {label:'Mood',data:history.map(r=>Number(r.mood)||0),borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.1)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#1D9E75',tension:0.4,fill:true},
-        {label:'Energy',data:history.map(r=>Number(r.energy)||0),borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.08)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#378ADD',tension:0.4,fill:true},
-        {label:'Pain',data:history.map(r=>Number(r.pain_overall)||0),borderColor:'#E24B4A',backgroundColor:'transparent',borderWidth:2,pointRadius:4,pointBackgroundColor:'#E24B4A',tension:0.4,borderDash:[5,3]}
-      ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.95)',titleColor:'#1a1a18',bodyColor:'#6b6b67',borderColor:'rgba(0,0,0,0.12)',borderWidth:1,padding:10,cornerRadius:8}},scales:{y:{min:0,max:10,ticks:{stepSize:2,font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'}},x:{ticks:{font:{size:10}},grid:{display:false}}}}});
-      drawRing(document.getElementById('ring1'),hc.pct,'#1D9E75',72);
-      drawRing(document.getElementById('ring2'),data.goal_avg_pct||0,'#378ADD',72);
-    }
-  }catch(err){
-    document.getElementById('dashContent').innerHTML=`<div class="empty-state"><i class="ti ti-wifi-off"></i><h3>Could not connect</h3><p style="font-size:12px;color:var(--text2);margin-bottom:12px">${err.message}</p><button class="btn" onclick="loadDashboard()"><i class="ti ti-refresh"></i> Try again</button></div>`;
-  }
+/* ── ACADEMIC CHART ── */
+function buildAcademicChart(){
+  if(!document.getElementById('academicChart'))return;
+  new Chart(document.getElementById('academicChart'),{type:'doughnut',data:{labels:['Biochemistry','Molecular Bio','Statistics','Programming','Research'],datasets:[{data:[30,25,15,20,10],backgroundColor:['#00d4a0','#4f8ef7','#a78bfa','#f59e0b','#06b6d4'],borderWidth:0}]},options:{plugins:{legend:{position:'bottom',labels:{font:{size:9},color:'rgba(120,140,180,.7)',boxWidth:10}}},cutout:'55%'}});
 }
-loadDashboard();
+
+/* ── INIT ── */
+loadAll();
+document.querySelectorAll('#trigTog .tog').forEach(b=>b.addEventListener('click',function(){this.classList.toggle('amild');}));
+setTimeout(buildAcademicChart,500);
 initReport();
 </script>
 </body>
